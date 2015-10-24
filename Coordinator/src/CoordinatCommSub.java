@@ -1,5 +1,5 @@
 
-public class MainClass {
+public class CoordinatCommSub {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
