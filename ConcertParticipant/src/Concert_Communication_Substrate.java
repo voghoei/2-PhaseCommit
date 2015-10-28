@@ -1,13 +1,28 @@
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Concert_Communication_Substrate {
-	static Socket concertSoc;
+	static Socket cSoc;
+	static ServerSocket concertSoc;
 
-	public static void main(String[] args) throws IOException {
-		concertSoc = new Socket("localhost", 5217);
-		Concert_Buffer_In in = new Concert_Buffer_In(concertSoc);
-		Concert_Buffer_Out out = new Concert_Buffer_Out(concertSoc);
+	public static void main(String[] args) {
+		try {
+			concertSoc = new ServerSocket(5217);
+			System.out.println("Concert Socket on Port Number 5217");
+			System.out.println("Waiting for Connection ...");
+			while (true) {
+				cSoc = concertSoc.accept();
+
+				// concertSoc = new Socket("localhost", 5217);
+				Concert_Buffer_In in = new Concert_Buffer_In(cSoc);
+				Concert_Buffer_Out out = new Concert_Buffer_Out(cSoc);
+			}
+
+		} catch (IOException e) {
+			System.out.println("exp: Concert Communication_Substrate ");
+			e.printStackTrace();
+		}
 
 	}
 

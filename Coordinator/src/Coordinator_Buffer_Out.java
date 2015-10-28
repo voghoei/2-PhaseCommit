@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Level;
 
 public class Coordinator_Buffer_Out extends Thread {
 	Socket hsoc;
@@ -32,8 +33,7 @@ public class Coordinator_Buffer_Out extends Thread {
 			cdout.writeUTF("Hi Concert");
 
 		} catch (Exception ex) {
-			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
-			// null, ex);
+			System.out.println("exp: Coordinator Buffer out run  ...");
 		}
 
 	}
