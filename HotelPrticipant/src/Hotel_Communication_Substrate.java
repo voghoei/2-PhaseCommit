@@ -10,7 +10,7 @@ public class Hotel_Communication_Substrate extends Thread {
 
 		try {
 			hotelSoc = new ServerSocket(5218);
-			System.out.println("Concert Socket on Port Number 5217");
+			System.out.println("Hotel Socket on Port Number 5218");
 			System.out.println("Waiting for Connection ...");
 			while (true) {
 				hSoc = hotelSoc.accept();

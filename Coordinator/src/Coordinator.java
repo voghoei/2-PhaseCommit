@@ -23,6 +23,7 @@ public class Coordinator {
 	static BufferedReader brCoordinatorConfig = null;
 
 	public static void main(String[] args) throws IOException {
+		
 		socketOpening();		
 
 		hotelIn = new Coordinator_Buffer_In_Hotel(hsoc);
@@ -58,6 +59,7 @@ public class Coordinator {
 		try {
 			fstreamCoordinateConfigFile = new FileInputStream(
 					"coordinator-configuration-file.txt");
+			
 			brCoordinatorConfig = new BufferedReader(new InputStreamReader(
 					fstreamCoordinateConfigFile));
 
@@ -66,8 +68,8 @@ public class Coordinator {
 			cPort = concertAdd.split(" ")[1];
 
 			String hotelAddress = brCoordinatorConfig.readLine();
-			cAddress = hotelAddress.split(" ")[0];
-			cPort = hotelAddress.split(" ")[1];
+			hAddress = hotelAddress.split(" ")[0];
+			hPort = hotelAddress.split(" ")[1];
 
 			csoc = new Socket(cAddress, Integer.parseInt(cPort));
 			System.out.println("Concert Socket on Port Number "+cPort);

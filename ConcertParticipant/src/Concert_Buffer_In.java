@@ -32,12 +32,15 @@ public class Concert_Buffer_In extends Thread {
 		try {
 
 			System.out.println("Concert Buffer In thread:  "+ Thread.currentThread().getId());
-			String Command = din.readUTF();
-            System.out.println(Command);
+			while(true){
+				String Command = din.readUTF();
+	            System.out.println(Command);
+			}
+			
 
 		} catch (Exception ex) {
-			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
-			// null, ex);
+			System.out.println("\tConnection Reset ");
+            System.out.println("Waiting for Connection ...");
 		}
 	}
 

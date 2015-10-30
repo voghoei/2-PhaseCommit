@@ -32,8 +32,10 @@ public class Hotel_Buffer_In extends Thread {
 		try {
 
 			System.out.println("Hotel Buffer In thread:  "+ Thread.currentThread().getId());
-			String Command = din.readUTF();
-            System.out.println(Command);
+			while(true){
+				String Command = din.readUTF();
+	            System.out.println(Command);
+			}
 
 		} catch (Exception ex) {
 			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
