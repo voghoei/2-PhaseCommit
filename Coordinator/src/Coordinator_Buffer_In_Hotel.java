@@ -3,12 +3,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Queue;
 
 public class Coordinator_Buffer_In_Hotel extends Thread {
 	DataInputStream hdin;
 	Socket hsoc;
 
-	public Coordinator_Buffer_In_Hotel(Socket hsoc) {
+	public Coordinator_Buffer_In_Hotel(Socket hsoc,Queue<String> hqin) {
 		try {
 			hsoc = hsoc;
 			hdin = new DataInputStream(hsoc.getInputStream());

@@ -3,12 +3,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Queue;
 
 public class Coordinator_Buffer_In_Concert extends Thread {
 	DataInputStream cdin;
 	Socket csoc;
+	Queue<String> cqinlocal;
 
-	public Coordinator_Buffer_In_Concert(Socket csoc) {
+	public Coordinator_Buffer_In_Concert(Socket csoc,Queue<String> cqin) {
 		try {
 			csoc = csoc;
 			cdin = new DataInputStream(csoc.getInputStream());

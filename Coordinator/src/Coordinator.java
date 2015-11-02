@@ -1,4 +1,6 @@
 import java.net.*;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.io.*;
 
 public class Coordinator {
@@ -21,14 +23,19 @@ public class Coordinator {
 	static FileInputStream fstreamCoordinateFile = null;
 	static BufferedReader brCoordinator = null;
 	static BufferedReader brCoordinatorConfig = null;
+	
+	//Buffers
+	static Queue<String> hqin = new LinkedList<String>();
+	static Queue<String> cqin = new LinkedList<String>();
+	static Queue<String> qout = new LinkedList<String>();
 
 	public static void main(String[] args) throws IOException {
 		
 		socketOpening();		
 
-		hotelIn = new Coordinator_Buffer_In_Hotel(hsoc);
-		concertIn = new Coordinator_Buffer_In_Concert(csoc);
-		outs = new Coordinator_Buffer_Out(hsoc, csoc);
+		hotelIn = new Coordinator_Buffer_In_Hotel(hsoc,hqin);
+		concertIn = new Coordinator_Buffer_In_Concert(csoc,cqin);
+		outs = new Coordinator_Buffer_Out(hsoc, csoc,qout);
 		
 		booking();
 	}

@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Queue;
 import java.util.logging.Level;
 
 public class Coordinator_Buffer_Out extends Thread {
@@ -10,7 +11,7 @@ public class Coordinator_Buffer_Out extends Thread {
 	DataOutputStream hdout;
 	DataOutputStream cdout;
 
-	public Coordinator_Buffer_Out(Socket hsoc, Socket csoc) {
+	public Coordinator_Buffer_Out(Socket hsoc, Socket csoc,Queue<String> qout) {
 		try {
 			hsoc = hsoc;
 			csoc = csoc;
