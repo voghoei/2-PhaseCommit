@@ -34,7 +34,7 @@ public class Coordinator_Buffer_In_Concert extends Thread {
 			try {
 
 				String Command = cdin.readUTF();
-				System.out.println(Command);
+				System.out.println("while coordinator concert in"+ Command);
 
 			} catch (Exception ex) {
 				System.out.println("\t exp:  Coordinator Concert Read  ");

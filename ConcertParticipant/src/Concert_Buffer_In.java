@@ -1,18 +1,25 @@
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 public class Concert_Buffer_In extends Thread {
 	Socket csoc;
 	DataInputStream din;
-
-	Concert_Buffer_In(Socket csoc) {
+	String inputCommand ;	
+	Queue<String> qinlocal;
+	
+	Concert_Buffer_In(Socket csoc,Queue<String> qin) {
 		try {
-			csoc = csoc;
+			this.csoc = csoc;
+			this.qinlocal = qin;
 			din = new DataInputStream(csoc.getInputStream());
 			System.out.println("Concert Buffer In Connected ...");
 			start();
+			
 
 		} catch (IOException e) {
 			System.out.println("Concert Buffer In Connection faild ...");
@@ -33,8 +40,11 @@ public class Concert_Buffer_In extends Thread {
 
 			System.out.println("Concert Buffer In thread:  "+ Thread.currentThread().getId());
 			while(true){
-				String Command = din.readUTF();
-	            System.out.println(Command);
+				inputCommand = din.readUTF();				
+	            System.out.println("&&&&&&&&  read: "+inputCommand);
+	            qinlocal.add(inputCommand);
+	            Thread.sleep(1000);
+	            
 			}
 			
 

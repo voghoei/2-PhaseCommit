@@ -29,8 +29,8 @@ public class Coordinator_Buffer_Out extends Thread {
 			System.out.println("Coordinator Buffer Out thread:  "
 					+ Thread.currentThread().getId());
 
-			hdout.writeUTF("Hi Hotel");
-			cdout.writeUTF("Hi Concert");
+//			hdout.writeUTF("Hi Hotel");
+//			cdout.writeUTF("Hi Concert");
 
 		} catch (Exception ex) {
 			System.out.println("exp: Coordinator Buffer out run  ...");

@@ -45,6 +45,16 @@ public class Coordinator {
 
 				outs.hdout.writeUTF(reservation);
 				outs.cdout.writeUTF(reservation);
+				String CommandConcert = concertIn.cdin.readUTF();
+				System.out.println("Command "+ CommandConcert);
+				
+     			String CommandHotel = hotelIn.hdin.readUTF();
+				System.out.println("Command "+ CommandHotel);
+				
+//				if (CommandHotel.split(" ")[1].compareTo(reservation.split(" ")[0]) == 0){
+//					
+//				}
+				
 			}
 
 		} catch (IOException e) {

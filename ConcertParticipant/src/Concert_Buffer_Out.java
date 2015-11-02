@@ -2,15 +2,18 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Queue;
 
 
 public class Concert_Buffer_Out extends Thread {
-	Socket cSoc;
+	Socket csoc;
 	DataOutputStream dout;
-
-	Concert_Buffer_Out(Socket csoc) {
+	Queue<String> qoutlocal;
+	
+	Concert_Buffer_Out(Socket csoc,Queue<String> qout) {
 		try {
-			csoc = csoc;
+			this.qoutlocal = qout;
+			this.csoc = csoc;
 			dout = new DataOutputStream(csoc.getOutputStream());
 			System.out.println("Concert Buffer Out Connected ...");
 			start();
@@ -25,19 +28,27 @@ public class Concert_Buffer_Out extends Thread {
 
 	protected void finalize() throws IOException {
 		dout.close();
-		cSoc.close();
+		csoc.close();
 
 	}
 
 	public void run() {
 		try {
-
 			System.out.println("Concert Buffer Out thread :  "+ Thread.currentThread().getId());
-			dout.writeUTF("Concert out test");
+			while(true){
+				if (!qoutlocal.isEmpty()){
+					dout.writeUTF(qoutlocal.poll());
+					System.out.println("is not empty .....");
+				}
+				//else
+					//System.out.println("Concert Buffer Out thread: qout empty ");
+			}
 
 		} catch (Exception ex) {
 			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
 			// null, ex);
+			System.out.println("exp: Concert Buffer Out thread ");
+			
 		}
 	}
 
