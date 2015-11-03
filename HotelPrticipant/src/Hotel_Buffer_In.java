@@ -1,18 +1,25 @@
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 public class Hotel_Buffer_In extends Thread {
 	Socket hsoc;
 	DataInputStream din;
-
-	Hotel_Buffer_In(Socket hsoc) {
+	String inputCommand ;	
+	Queue<String> qinlocal;
+	
+	Hotel_Buffer_In(Socket csoc,Queue<String> qin) {
 		try {
-			hsoc = hsoc;
+			this.hsoc = csoc;
+			this.qinlocal = qin;
 			din = new DataInputStream(hsoc.getInputStream());
 			System.out.println("Hotel Buffer In Connected ...");
 			start();
+			
 
 		} catch (IOException e) {
 			System.out.println("Hotel Buffer In Connection faild ...");
@@ -33,13 +40,17 @@ public class Hotel_Buffer_In extends Thread {
 
 			System.out.println("Hotel Buffer In thread:  "+ Thread.currentThread().getId());
 			while(true){
-				String Command = din.readUTF();
-	            System.out.println(Command);
+				inputCommand = din.readUTF();				
+	            System.out.println("&&&&&&&&  read: "+inputCommand);
+	            qinlocal.add(inputCommand);
+	            Thread.sleep(1000);
+	            
 			}
+			
 
 		} catch (Exception ex) {
-			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
-			// null, ex);
+			System.out.println("\tConnection Reset ");
+            System.out.println("Waiting for Connection ...");
 		}
 	}
 
