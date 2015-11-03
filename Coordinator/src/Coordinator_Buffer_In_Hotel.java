@@ -8,10 +8,12 @@ import java.util.Queue;
 public class Coordinator_Buffer_In_Hotel extends Thread {
 	DataInputStream hdin;
 	Socket hsoc;
+	Queue<String> hqinlocal;
 
 	public Coordinator_Buffer_In_Hotel(Socket hsoc,Queue<String> hqin) {
 		try {
 			hsoc = hsoc;
+			hqinlocal = hqin;
 			hdin = new DataInputStream(hsoc.getInputStream());
 			System.out.println("Coordinator Hotel Buffer In Connected ...");
 			start();
@@ -35,7 +37,10 @@ public class Coordinator_Buffer_In_Hotel extends Thread {
 			try {
 
 				String Command = hdin.readUTF();
-				System.out.println(Command);
+				System.out.println("while coordinator hotel in  "+ Command);
+				
+				hqinlocal.add(Command);
+	            Thread.sleep(1000);
 
 			} catch (Exception ex) {
 				System.out.println("\t\t exp:  Coordinator Hotel Read ");

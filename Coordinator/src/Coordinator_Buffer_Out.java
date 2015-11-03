@@ -32,9 +32,9 @@ public class Coordinator_Buffer_Out extends Thread {
 					+ Thread.currentThread().getId());
 			while(true){
 				if (qoutlocal.size()>0){
-					String Command = qoutlocal.poll();
-					cdout.writeUTF(Command);
-					hdout.writeUTF(Command);
+					String Comment = qoutlocal.poll();
+					cdout.writeUTF(Comment);
+					hdout.writeUTF(Comment);
 					System.out.println("is not empty .....");
 					Thread.sleep(1000);
 				}
