@@ -10,9 +10,11 @@ public class Coordinator_Buffer_Out extends Thread {
 	Socket csoc;
 	DataOutputStream hdout;
 	DataOutputStream cdout;
+	Queue<String> qoutlocal;
 
 	public Coordinator_Buffer_Out(Socket hsoc, Socket csoc,Queue<String> qout) {
 		try {
+			qoutlocal= qout;
 			hsoc = hsoc;
 			csoc = csoc;
 			hdout = new DataOutputStream(hsoc.getOutputStream());
@@ -26,12 +28,19 @@ public class Coordinator_Buffer_Out extends Thread {
 
 	public void run() {
 		try {
-
 			System.out.println("Coordinator Buffer Out thread:  "
 					+ Thread.currentThread().getId());
-
-//			hdout.writeUTF("Hi Hotel");
-//			cdout.writeUTF("Hi Concert");
+			while(true){
+				if (qoutlocal.size()>0){
+					String Command = qoutlocal.poll();
+					cdout.writeUTF(Command);
+					hdout.writeUTF(Command);
+					System.out.println("is not empty .....");
+					Thread.sleep(1000);
+				}
+//				hdout.writeUTF("Hi Hotel");
+//				cdout.writeUTF("Hi Concert");
+			}			
 
 		} catch (Exception ex) {
 			System.out.println("exp: Coordinator Buffer out run  ...");

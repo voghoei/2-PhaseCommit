@@ -49,9 +49,9 @@ public class Coordinator {
 					fstreamCoordinateFile));
 			
 			while ((reservation = brCoordinator.readLine()) != null) {
-
-				outs.hdout.writeUTF(reservation);
-				outs.cdout.writeUTF(reservation);
+				qout.add(reservation);
+//				outs.hdout.writeUTF(reservation);
+//				outs.cdout.writeUTF(reservation);
 				String CommandConcert = concertIn.cdin.readUTF();
 				System.out.println("Command "+ CommandConcert);
 				

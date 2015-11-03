@@ -12,6 +12,7 @@ public class Coordinator_Buffer_In_Concert extends Thread {
 
 	public Coordinator_Buffer_In_Concert(Socket csoc,Queue<String> cqin) {
 		try {
+			cqinlocal = cqin;
 			csoc = csoc;
 			cdin = new DataInputStream(csoc.getInputStream());
 			System.out.println("Coordinator Concert Buffer In Connected ...");
@@ -37,6 +38,9 @@ public class Coordinator_Buffer_In_Concert extends Thread {
 
 				String Command = cdin.readUTF();
 				System.out.println("while coordinator concert in"+ Command);
+				
+				cqinlocal.add(Command);
+	            Thread.sleep(1000);
 
 			} catch (Exception ex) {
 				System.out.println("\t exp:  Coordinator Concert Read  ");

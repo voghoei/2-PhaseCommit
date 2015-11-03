@@ -36,7 +36,7 @@ public class Concert_Buffer_Out extends Thread {
 		try {
 			System.out.println("Concert Buffer Out thread :  "+ Thread.currentThread().getId());
 			while(true){
-				if (!qoutlocal.isEmpty()){
+				if (qoutlocal.size()>0){
 					dout.writeUTF(qoutlocal.poll());
 					System.out.println("is not empty .....");
 					Thread.sleep(1000);
