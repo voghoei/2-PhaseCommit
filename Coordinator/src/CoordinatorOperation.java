@@ -13,13 +13,13 @@ Queue<String> hqinlocal;
 static Queue<String> qoutlocal;
 
 // Input coordinate file
-static FileInputStream fstreamCoordinateConfigFile = null;
 static FileInputStream fstreamCoordinateFile = null;
 static BufferedReader brCoordinator = null;
-static BufferedReader brCoordinatorConfig = null;
+static BufferedReader brCoordinatorConfigLocal;
 
 
-CoordinatorOperation(Queue<String> cqin,Queue<String> hqin, Queue<String> qout) {
+CoordinatorOperation(Queue<String> cqin,Queue<String> hqin, Queue<String> qout,BufferedReader brCoordinatorConfig) {
+	brCoordinatorConfigLocal = brCoordinatorConfig;
 	cqinlocal = cqin;
 	hqinlocal = hqin;
 	qoutlocal = qout;	
@@ -31,14 +31,16 @@ public static void booking() {
 	String reservation;
 	try {
 		fstreamCoordinateFile = new FileInputStream(
-				brCoordinatorConfig.readLine());
+				brCoordinatorConfigLocal.readLine());
 		brCoordinator = new BufferedReader(new InputStreamReader(
 				fstreamCoordinateFile));
 		
-		while ((reservation = brCoordinator.readLine()) != null) {
+		//while ((reservation = brCoordinator.readLine()) != null) {
+		reservation = brCoordinator.readLine();
 			qoutlocal.add("VOTE-REQUEST:"+reservation);
+			System.out.println("VOTE-REQUEST added to local cout");
 		
-		}
+		//}
 
 	} catch (IOException e) {
 		// TODO Auto-generated catch block

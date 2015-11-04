@@ -10,8 +10,8 @@ public class Concert_Buffer_Out extends Thread {
 
 	Concert_Buffer_Out(Socket csoc, Queue<String> qout) {
 		try {
-			this.qoutlocal = qout;
-			this.csoc = csoc;
+			qoutlocal = qout;
+			csoc = csoc;
 			dout = new DataOutputStream(csoc.getOutputStream());
 			System.out.println("Concert Buffer Out Connected ...");
 			start();
@@ -34,13 +34,14 @@ public class Concert_Buffer_Out extends Thread {
 					+ Thread.currentThread().getId());
 			while (true) {
 				if (qoutlocal.size() > 0) {
+					System.out.println("is not empty .....");
 					String msg = qoutlocal.poll();
 					dout.writeUTF(msg);
 					System.out.println("is not empty ....." + msg);
 					Thread.sleep(1000);
 				}
-				// else
-				// System.out.println("Concert Buffer Out thread: qout empty ");
+//				 else
+//				 System.out.println("Concert Buffer Out thread: qout empty ");
 			}
 
 		} catch (Exception ex) {

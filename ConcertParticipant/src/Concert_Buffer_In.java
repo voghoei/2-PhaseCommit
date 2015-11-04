@@ -31,7 +31,7 @@ public class Concert_Buffer_In extends Thread {
 					+ Thread.currentThread().getId());
 			while (true) {
 				inputCommand = din.readUTF();
-				System.out.println("Concert Buffer In thread: " + inputCommand);
+				System.out.println("Concert Buffer In while loop : " + inputCommand);
 				qinlocal.add(inputCommand);
 				Thread.sleep(1000);
 			}

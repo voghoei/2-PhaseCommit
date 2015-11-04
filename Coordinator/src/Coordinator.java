@@ -21,8 +21,6 @@ public class Coordinator {
 
 	// Input coordinate file
 	static FileInputStream fstreamCoordinateConfigFile = null;
-	static FileInputStream fstreamCoordinateFile = null;
-	static BufferedReader brCoordinator = null;
 	static BufferedReader brCoordinatorConfig = null;
 	
 	//Buffers
@@ -37,7 +35,7 @@ public class Coordinator {
 		hotelIn = new Coordinator_Buffer_In_Hotel(hsoc,hqin);
 		concertIn = new Coordinator_Buffer_In_Concert(csoc,cqin);
 		outs = new Coordinator_Buffer_Out(hsoc, csoc,qout);	
-		operation = new  CoordinatorOperation(cqin,hqin,qout);
+		operation = new  CoordinatorOperation(cqin,hqin,qout, brCoordinatorConfig);
 	}
 
 	

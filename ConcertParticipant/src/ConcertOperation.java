@@ -23,9 +23,9 @@ public class ConcertOperation {
 				System.out.println("*****  qin value " + qinlocal.toString()
 						+ " qin size = " + qinlocal.size());
 				String msg = qinlocal.poll();
-				switch (msg.split(": ")[0]) {
+				switch (msg.split(":")[0]) {
 				case "VOTE-REQUEST": {
-					if (checkavailabality(msg.split(": ")[1])) {
+					if (checkavailabality(msg.split(":")[1])) {
 						System.out.println("Commit");
 						qoutlocal.add("VOTE-COMMIT:CONCERT:"+transactionId);
 					} else {
