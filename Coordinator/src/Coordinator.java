@@ -15,6 +15,7 @@ public class Coordinator {
 	static Coordinator_Buffer_In_Hotel hotelIn;
 	static Coordinator_Buffer_In_Concert concertIn;
 	static Coordinator_Buffer_Out outs;
+	static CoordinatorOperation operation;
 
 	// Log file
 
@@ -35,41 +36,11 @@ public class Coordinator {
 
 		hotelIn = new Coordinator_Buffer_In_Hotel(hsoc,hqin);
 		concertIn = new Coordinator_Buffer_In_Concert(csoc,cqin);
-		outs = new Coordinator_Buffer_Out(hsoc, csoc,qout);
-		
-		booking();
+		outs = new Coordinator_Buffer_Out(hsoc, csoc,qout);	
+		operation = new  CoordinatorOperation(cqin,hqin,qout);
 	}
 
-	public static void booking() {
-		String reservation;
-		try {
-			fstreamCoordinateFile = new FileInputStream(
-					brCoordinatorConfig.readLine());
-			brCoordinator = new BufferedReader(new InputStreamReader(
-					fstreamCoordinateFile));
-			
-			while ((reservation = brCoordinator.readLine()) != null) {
-				qout.add(reservation);
-//				outs.hdout.writeUTF(reservation);
-//				outs.cdout.writeUTF(reservation);
-//				String CommandConcert = concertIn.cdin.readUTF();
-//				System.out.println("Command "+ CommandConcert);
-//				
-//     			String CommandHotel = hotelIn.hdin.readUTF();
-//				System.out.println("Command "+ CommandHotel);
-				
-//				if (CommandHotel.split(" ")[1].compareTo(reservation.split(" ")[0]) == 0){
-//					
-//				}
-				
-			}
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	
 
 	public static void socketOpening() {
 
@@ -92,8 +63,7 @@ public class Coordinator {
 			System.out.println("Concert Socket on Port Number "+cPort);
 			
 			hsoc = new Socket(hAddress, Integer.parseInt(hPort));			
-			System.out.println("Hotel Socket on Port Number "+hPort);
-			
+			System.out.println("Hotel Socket on Port Number "+hPort);			
 
 		} catch (IOException e) {
 			System.out.println("exp: Coordinator Communication_Substrate ");

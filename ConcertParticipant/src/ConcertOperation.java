@@ -22,12 +22,18 @@ public class ConcertOperation {
 			if (qinlocal.size() > 0) {
 				System.out.println("*****  qin value " + qinlocal.toString()
 						+ " qin size = " + qinlocal.size());
-				if (checkavailabality(qinlocal.poll())) {
-					System.out.println("Commit");
-					qoutlocal.add(transactionId + " Commit");
-				} else {
-					System.out.println("Abort");
-					qoutlocal.add(transactionId + " Abort");
+				String msg = qinlocal.poll();
+				switch (msg.split(": ")[0]) {
+				case "VOTE-REQUEST": {
+					if (checkavailabality(msg.split(": ")[1])) {
+						System.out.println("Commit");
+						qoutlocal.add("VOTE-COMMIT:CONCERT:"+transactionId);
+					} else {
+						System.out.println("Abort");
+						qoutlocal.add("VOTE-ABORT:CONCERT:"+transactionId);
+					}
+					break;
+				}
 				}
 			}
 		}
