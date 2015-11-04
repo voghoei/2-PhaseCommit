@@ -9,7 +9,7 @@ public class Concert_Buffer_In extends Thread {
 	String inputCommand;
 	Queue<String> qinlocal;
 
-	Concert_Buffer_In(Socket csoc, Queue<String> qin) {
+	 Concert_Buffer_In(Socket csoc, Queue<String> qin) {
 		try {
 			this.csoc = csoc;
 			this.qinlocal = qin;

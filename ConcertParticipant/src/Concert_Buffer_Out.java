@@ -8,10 +8,10 @@ public class Concert_Buffer_Out extends Thread {
 	DataOutputStream dout;
 	Queue<String> qoutlocal;
 
-	Concert_Buffer_Out(Socket csoc, Queue<String> qout) {
+	 Concert_Buffer_Out(Socket csoc, Queue<String> qout) {
 		try {
-			qoutlocal = qout;
-			csoc = csoc;
+			this.csoc = csoc;
+			this.qoutlocal = qout;
 			dout = new DataOutputStream(csoc.getOutputStream());
 			System.out.println("Concert Buffer Out Connected ...");
 			start();

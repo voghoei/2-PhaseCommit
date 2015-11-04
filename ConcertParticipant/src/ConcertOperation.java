@@ -11,8 +11,8 @@ public class ConcertOperation {
 	Queue<String> qoutlocal;
 
 	ConcertOperation(Queue<String> qin, Queue<String> qout) {
-		qinlocal = qin;
-		qoutlocal = qout;
+		this.qinlocal = qin;
+		this.qoutlocal = qout;
 		concertConfig();
 		decisionMaker();
 	}
