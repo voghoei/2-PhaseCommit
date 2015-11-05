@@ -3,6 +3,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 
 public class Coordinator_Buffer_Out extends Thread {
@@ -10,13 +11,13 @@ public class Coordinator_Buffer_Out extends Thread {
 	Socket csoc;
 	DataOutputStream hdout;
 	DataOutputStream cdout;
-	Queue<String> qoutlocal;
+	ConcurrentLinkedQueue<String> qoutlocal;
 
-	public Coordinator_Buffer_Out(Socket hsoc, Socket csoc,Queue<String> qout) {
+	public Coordinator_Buffer_Out(Socket hsoc, Socket csoc,ConcurrentLinkedQueue<String> qout) {
 		try {
-			qoutlocal= qout;
-			hsoc = hsoc;
-			csoc = csoc;
+			this.qoutlocal= qout;
+			this.hsoc = hsoc;
+			this.csoc = csoc;
 			hdout = new DataOutputStream(hsoc.getOutputStream());
 			cdout = new DataOutputStream(csoc.getOutputStream());
 			System.out.println("Coordinator Buffer Out Connected ...");
@@ -37,7 +38,7 @@ public class Coordinator_Buffer_Out extends Thread {
 					cdout.writeUTF(msg);
 					hdout.writeUTF(msg);
 					System.out.println("Coordinator Buffer Out, message: "+msg);
-					Thread.sleep(1000);
+
 				}
 
 			}			

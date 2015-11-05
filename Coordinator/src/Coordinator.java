@@ -1,7 +1,11 @@
 import java.net.*;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.io.*;
+
+import javafx.util.Pair;
 
 public class Coordinator {
 	// Sockes Initialization
@@ -24,11 +28,14 @@ public class Coordinator {
 	static BufferedReader brCoordinatorConfig = null;
 	
 	//Buffers
-	static Queue<String> hqin = new LinkedList<String>();
-	static Queue<String> cqin = new LinkedList<String>();
-	static Queue<String> qout = new LinkedList<String>();
-
+	static ConcurrentLinkedQueue<String> hqin;
+	static ConcurrentLinkedQueue<String> cqin;
+	static ConcurrentLinkedQueue<String> qout;
+	
 	public static void main(String[] args) throws IOException {
+		hqin = new ConcurrentLinkedQueue<String>();
+		cqin = new ConcurrentLinkedQueue<String>();
+		qout = new ConcurrentLinkedQueue<String>();
 		
 		socketOpening();		
 

@@ -3,14 +3,18 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Hashtable;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javafx.util.Pair;
 
 public class Coordinator_Buffer_In_Hotel extends Thread {
 	DataInputStream hdin;
 	Socket hsoc;
-	Queue<String> hqinlocal;
-
-	public Coordinator_Buffer_In_Hotel(Socket hsoc,Queue<String> hqin) {
+	ConcurrentLinkedQueue<String> hqinlocal;
+	
+	public Coordinator_Buffer_In_Hotel(Socket hsoc,ConcurrentLinkedQueue<String> hqin) {
 		try {
 			hsoc = hsoc;
 			hqinlocal = hqin;
@@ -19,7 +23,7 @@ public class Coordinator_Buffer_In_Hotel extends Thread {
 			start();
 		} catch (Exception ex) {
 			System.out
-					.println("exp: Coordinator Hotel Buffer in Constructor  ...");
+			.println("exp: Coordinator Hotel Buffer in Constructor  ...");
 		}
 	}
 
@@ -33,19 +37,20 @@ public class Coordinator_Buffer_In_Hotel extends Thread {
 			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
 			// null, ex);
 		}
-		while (true) {
-			try {
+		try {
+			while (true) {
+
 
 				String Command = hdin.readUTF();
 				System.out.println("while coordinator hotel in  "+ Command);
-				
 				hqinlocal.add(Command);
-	            Thread.sleep(1000);
 
-			} catch (Exception ex) {
-				System.out.println("\t\t exp:  Coordinator Hotel Read ");
+
 
 			}
+		} catch (Exception ex) {
+			System.out.println("\t\t exp:  Coordinator Hotel Read ");
+
 		}
 	}
 

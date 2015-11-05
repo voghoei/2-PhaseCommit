@@ -3,37 +3,48 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ConcertOperation {
+public class ConcertOperation extends Thread {
 	static String transactionId;
 	static int[] ticketAvailable;
-	Queue<String> qinlocal;
-	Queue<String> qoutlocal;
+	ConcurrentLinkedQueue<String> qinlocal;
+	ConcurrentLinkedQueue<String> qoutlocal;
 
-	ConcertOperation(Queue<String> qin, Queue<String> qout) {
+	ConcertOperation(ConcurrentLinkedQueue<String> qin,
+			ConcurrentLinkedQueue<String> qout) {
 		this.qinlocal = qin;
 		this.qoutlocal = qout;
 		concertConfig();
-		decisionMaker();
+		start();
 	}
 
-	public void decisionMaker() {
+	public void run() {
 		while (true) {
 			if (qinlocal.size() > 0) {
 				System.out.println("*****  qin value " + qinlocal.toString()
 						+ " qin size = " + qinlocal.size());
 				String msg = qinlocal.poll();
 				switch (msg.split(":")[0]) {
-				case "VOTE-REQUEST": {
+				case "VOTE-REQUEST":
 					if (checkavailabality(msg.split(":")[1])) {
 						System.out.println("Commit");
-						qoutlocal.add("VOTE-COMMIT:CONCERT:"+transactionId);
+						qoutlocal.add("VOTE-COMMIT:" + msg.split(":")[1]);
 					} else {
 						System.out.println("Abort");
-						qoutlocal.add("VOTE-ABORT:CONCERT:"+transactionId);
+						qoutlocal.add("VOTE-ABORT:" + msg.split(":")[1]);
 					}
 					break;
-				}
+				case "GLOBAL-COMMIT":
+					System.out.println("GLOBAL-COMMIT");
+					deductTicket(msg);
+					break;
+					
+				case "GLOBAL-ABORT":
+					System.out.println("GLOBAL-ABORT");
+					break;
+					
+
 				}
 			}
 		}
@@ -41,25 +52,24 @@ public class ConcertOperation {
 
 	public static boolean checkavailabality(String Command) {
 		boolean flag = true;
-		System.out.println("Concert Buffer In. Run : Command = " + Command);
 		if (Command.contains("[")) {
 			transactionId = Command.split(" ")[0];
-			System.out.println("transactionId = " + transactionId);
+//			System.out.println("transactionId = " + transactionId);
 
 			String days = Command.split("\\[")[1].split("\\]")[0];
-			System.out.println("days = " + days);
+//			System.out.println("days = " + days);
 
 			int numTicket = Integer.parseInt(Command.split(" ")[1]);
-			System.out.println("numTicket = " + numTicket);
+//			System.out.println("numTicket = " + numTicket);
 
 			for (int i = 0; i < days.split(" ").length; i++) {
-				System.out.println("Each day  = "
-						+ Integer.parseInt(days.split(" ")[i]));
-
-				System.out
-						.println("numavailable = "
-								+ ticketAvailable[Integer.parseInt(days
-										.split(" ")[i])]);
+//				System.out.println("Each day  = "
+//						+ Integer.parseInt(days.split(" ")[i]));
+//
+//				System.out
+//						.println("numavailable = "
+//								+ ticketAvailable[Integer.parseInt(days
+//										.split(" ")[i])]);
 
 				if (numTicket > ticketAvailable[Integer.parseInt(days
 						.split(" ")[i])]) {
@@ -68,6 +78,32 @@ public class ConcertOperation {
 			}
 		}
 		return flag;
+	}
+
+	public static void deductTicket(String Command) {
+
+		if (Command.contains("[")) {
+			transactionId = Command.split(" ")[0];
+//			System.out.println("transactionId = " + transactionId);
+
+			String days = Command.split("\\[")[1].split("\\]")[0];
+//			System.out.println("days = " + days);
+
+			int numTicket = Integer.parseInt(Command.split(" ")[1]);
+//			System.out.println("numTicket = " + numTicket);
+
+			for (int i = 0; i < days.split(" ").length; i++) {
+				ticketAvailable[Integer.parseInt(days.split(" ")[i])] -= numTicket;
+//				System.out.println("Each day  = "
+//						+ Integer.parseInt(days.split(" ")[i]));
+//
+//				System.out
+//						.println("numavailable = "
+//								+ ticketAvailable[Integer.parseInt(days
+//										.split(" ")[i])]);
+				
+			}
+		}
 	}
 
 	public static void concertConfig() {

@@ -2,14 +2,15 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Concert_Buffer_In extends Thread {
 	Socket csoc;
 	DataInputStream din;
 	String inputCommand;
-	Queue<String> qinlocal;
+	ConcurrentLinkedQueue<String> qinlocal;
 
-	 Concert_Buffer_In(Socket csoc, Queue<String> qin) {
+	 Concert_Buffer_In(Socket csoc, ConcurrentLinkedQueue<String> qin) {
 		try {
 			this.csoc = csoc;
 			this.qinlocal = qin;
@@ -33,7 +34,7 @@ public class Concert_Buffer_In extends Thread {
 				inputCommand = din.readUTF();
 				System.out.println("Concert Buffer In while loop : " + inputCommand);
 				qinlocal.add(inputCommand);
-				Thread.sleep(1000);
+				//Thread.sleep(1000);
 			}
 
 		} catch (Exception ex) {

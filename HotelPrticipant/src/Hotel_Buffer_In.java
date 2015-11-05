@@ -2,14 +2,15 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Hotel_Buffer_In extends Thread {
 	Socket hsoc;
 	DataInputStream din;
 	String inputCommand;
-	Queue<String> qinlocal;
+	ConcurrentLinkedQueue<String> qinlocal;
 
-	Hotel_Buffer_In(Socket hsoc, Queue<String> qin) {
+	Hotel_Buffer_In(Socket hsoc, ConcurrentLinkedQueue<String> qin) {
 		try {
 			this.hsoc = hsoc;
 			this.qinlocal = qin;
@@ -31,9 +32,10 @@ public class Hotel_Buffer_In extends Thread {
 					+ Thread.currentThread().getId());
 			while (true) {
 				inputCommand = din.readUTF();
-				System.out.println("&&&&&&&&  read: " + inputCommand);
+//				System.out.println("&&&&&&&&  read: " + inputCommand);
+				System.out.println("Hotel Buffer In while loop : " + inputCommand);
 				qinlocal.add(inputCommand);
-				Thread.sleep(1000);
+				//Thread.sleep(1000);
 			}
 
 		} catch (Exception ex) {

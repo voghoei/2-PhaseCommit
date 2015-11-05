@@ -5,18 +5,20 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Concert_Communication_Substrate {
 	static Socket cSoc;
 	static ServerSocket concertSoc;
-	static Queue<String> qin = new LinkedList<String>();
-	static Queue<String> qout = new LinkedList<String>();
+	static ConcurrentLinkedQueue<String> qin;
+	static ConcurrentLinkedQueue<String> qout;
 	
 
 	public static void main(String[] args) {
 		try {
 
-			
+			qin = new ConcurrentLinkedQueue<String>();
+			qout = new ConcurrentLinkedQueue<String>();
 			concertSoc = new ServerSocket(5217);
 			System.out.println("Concert Socket on Port Number 5217");
 			System.out.println("Waiting for Connection ...");

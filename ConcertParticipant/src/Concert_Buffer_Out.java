@@ -2,13 +2,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Concert_Buffer_Out extends Thread {
 	Socket csoc;
 	DataOutputStream dout;
-	Queue<String> qoutlocal;
+	ConcurrentLinkedQueue<String> qoutlocal;
 
-	 Concert_Buffer_Out(Socket csoc, Queue<String> qout) {
+	 Concert_Buffer_Out(Socket csoc, ConcurrentLinkedQueue<String> qout) {
 		try {
 			this.csoc = csoc;
 			this.qoutlocal = qout;
@@ -34,11 +35,11 @@ public class Concert_Buffer_Out extends Thread {
 					+ Thread.currentThread().getId());
 			while (true) {
 				if (qoutlocal.size() > 0) {
-					System.out.println("is not empty .....");
+					//System.out.println("is not empty .....");
 					String msg = qoutlocal.poll();
 					dout.writeUTF(msg);
 					System.out.println("is not empty ....." + msg);
-					Thread.sleep(1000);
+//					Thread.sleep(1000);
 				}
 //				 else
 //				 System.out.println("Concert Buffer Out thread: qout empty ");
