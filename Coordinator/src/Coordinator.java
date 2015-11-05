@@ -22,6 +22,10 @@ public class Coordinator {
 	static CoordinatorOperation operation;
 
 	// Log file
+	
+	//
+	static int status;
+		
 
 	// Input coordinate file
 	static FileInputStream fstreamCoordinateConfigFile = null;
