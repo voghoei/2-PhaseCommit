@@ -8,9 +8,11 @@ public class Concert_Buffer_Out extends Thread {
 	Socket csoc;
 	DataOutputStream dout;
 	ConcurrentLinkedQueue<String> qoutlocal;
+	int statusLocal;
 
-	 Concert_Buffer_Out(Socket csoc, ConcurrentLinkedQueue<String> qout) {
+	Concert_Buffer_Out(Socket csoc, ConcurrentLinkedQueue<String> qout, int status) {
 		try {
+			this.statusLocal = status;
 			this.csoc = csoc;
 			this.qoutlocal = qout;
 			dout = new DataOutputStream(csoc.getOutputStream());
@@ -31,23 +33,21 @@ public class Concert_Buffer_Out extends Thread {
 
 	public void run() {
 		try {
-			System.out.println("Concert Buffer Out thread :  "
-					+ Thread.currentThread().getId());
+			String msg;
+			System.out.println("Concert Buffer Out thread :  " + Thread.currentThread().getId());
 			while (true) {
 				if (qoutlocal.size() > 0) {
-					//System.out.println("is not empty .....");
-					String msg = qoutlocal.poll();
-					dout.writeUTF(msg);
-					System.out.println("is not empty ....." + msg);
-//					Thread.sleep(1000);
+					if (statusLocal == 1) {
+						msg = qoutlocal.poll();
+						dout.writeUTF(msg);
+						System.out.println("Concert Buffer Out, message" + msg);
+					} else {
+						qoutlocal.clear();
+						System.out.println("Concert Buffer Out, qout clean ");
+					}
 				}
-//				 else
-//				 System.out.println("Concert Buffer Out thread: qout empty ");
 			}
-
 		} catch (Exception ex) {
-			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
-			// null, ex);
 			System.out.println("exp: Concert Buffer Out thread ");
 		}
 	}

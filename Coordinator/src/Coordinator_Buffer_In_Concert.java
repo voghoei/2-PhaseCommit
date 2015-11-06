@@ -1,51 +1,42 @@
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Hashtable;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import javafx.util.Pair;
 
 public class Coordinator_Buffer_In_Concert extends Thread {
 	DataInputStream cdin;
 	Socket csoc;
 	ConcurrentLinkedQueue<String> cqinlocal;
-	
-	public Coordinator_Buffer_In_Concert(Socket csoc,ConcurrentLinkedQueue<String> cqin) {
+	int statusLocal;
+
+	public Coordinator_Buffer_In_Concert(Socket csoc, ConcurrentLinkedQueue<String> cqin, int status) {
 		try {
+			this.statusLocal = status;
 			this.cqinlocal = cqin;
 			this.csoc = csoc;
 			this.cdin = new DataInputStream(csoc.getInputStream());
 			System.out.println("Coordinator Concert Buffer In Connected ...");
 			start();
 		} catch (Exception ex) {
-			System.out
-			.println("exp: Coordinator concert Buffer in Constructor  ...");
+			System.out.println("exp: Coordinator concert Buffer in Constructor  ...");
 		}
 	}
 
 	public void run() {
+		String msg;
 		try {
 			// table.put(Thread.currentThread().getId(), false);
-			System.out.println("Coordinator Concert Buffer In thread:  "
-					+ Thread.currentThread().getId());
+			System.out.println("Coordinator Concert Buffer In thread:  " + Thread.currentThread().getId());
 
-		} catch (Exception ex) {
-			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
-			// null, ex);\su
-			System.out.println("abbas: error");
-		}
-		try {
 			while (true) {
-
-
-				String msg = cdin.readUTF();
-				System.out.println("while coordinator concert in "+ msg);
-				cqinlocal.add(msg);	
-
+				if (statusLocal == 1) {
+					msg = cdin.readUTF();
+					System.out.println("while coordinator concert in, Normal mode" + msg);
+					cqinlocal.add(msg);
+				} else {
+					msg = cdin.readUTF();
+					System.out.println("while coordinator concert in, Discarde Message " + msg);
+				}
 			}
 		} catch (Exception ex) {
 			System.out.println("\t exp:  Coordinator Concert Read  ");

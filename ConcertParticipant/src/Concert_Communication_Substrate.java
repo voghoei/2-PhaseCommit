@@ -12,6 +12,7 @@ public class Concert_Communication_Substrate {
 	static ServerSocket concertSoc;
 	static ConcurrentLinkedQueue<String> qin;
 	static ConcurrentLinkedQueue<String> qout;
+	static int status;
 	
 
 	public static void main(String[] args) {
@@ -23,9 +24,9 @@ public class Concert_Communication_Substrate {
 			System.out.println("Concert Socket on Port Number 5217");
 			System.out.println("Waiting for Connection ...");
 			cSoc = concertSoc.accept();
-			Concert_Buffer_In in = new Concert_Buffer_In(cSoc, qin);
-			Concert_Buffer_Out out = new Concert_Buffer_Out(cSoc, qout);
-			ConcertOperation opt = new ConcertOperation(qin, qout);
+			Concert_Buffer_In in = new Concert_Buffer_In(cSoc, qin,status);
+			Concert_Buffer_Out out = new Concert_Buffer_Out(cSoc, qout,status);
+			ConcertOperation opt = new ConcertOperation(qin, qout,status);
 			
 			
 

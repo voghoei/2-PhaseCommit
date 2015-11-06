@@ -12,7 +12,7 @@ public class ConcertOperation extends Thread {
 	ConcurrentLinkedQueue<String> qoutlocal;
 
 	ConcertOperation(ConcurrentLinkedQueue<String> qin,
-			ConcurrentLinkedQueue<String> qout) {
+			ConcurrentLinkedQueue<String> qout, int status) {
 		this.qinlocal = qin;
 		this.qoutlocal = qout;
 		concertConfig();
@@ -22,8 +22,9 @@ public class ConcertOperation extends Thread {
 	public void run() {
 		while (true) {
 			if (qinlocal.size() > 0) {
-				System.out.println("*****  qin value " + qinlocal.toString()
-						+ " qin size = " + qinlocal.size());
+				System.out.println("Concert Opration qin while "
+						+ qinlocal.toString());
+				
 				String msg = qinlocal.poll();
 				switch (msg.split(":")[0]) {
 				case "VOTE-REQUEST":
@@ -39,11 +40,10 @@ public class ConcertOperation extends Thread {
 					System.out.println("GLOBAL-COMMIT");
 					deductTicket(msg);
 					break;
-					
+
 				case "GLOBAL-ABORT":
 					System.out.println("GLOBAL-ABORT");
 					break;
-					
 
 				}
 			}
@@ -54,22 +54,22 @@ public class ConcertOperation extends Thread {
 		boolean flag = true;
 		if (Command.contains("[")) {
 			transactionId = Command.split(" ")[0];
-//			System.out.println("transactionId = " + transactionId);
+			// System.out.println("transactionId = " + transactionId);
 
 			String days = Command.split("\\[")[1].split("\\]")[0];
-//			System.out.println("days = " + days);
+			// System.out.println("days = " + days);
 
 			int numTicket = Integer.parseInt(Command.split(" ")[1]);
-//			System.out.println("numTicket = " + numTicket);
+			// System.out.println("numTicket = " + numTicket);
 
 			for (int i = 0; i < days.split(" ").length; i++) {
-//				System.out.println("Each day  = "
-//						+ Integer.parseInt(days.split(" ")[i]));
-//
-//				System.out
-//						.println("numavailable = "
-//								+ ticketAvailable[Integer.parseInt(days
-//										.split(" ")[i])]);
+				// System.out.println("Each day  = "
+				// + Integer.parseInt(days.split(" ")[i]));
+				//
+				// System.out
+				// .println("numavailable = "
+				// + ticketAvailable[Integer.parseInt(days
+				// .split(" ")[i])]);
 
 				if (numTicket > ticketAvailable[Integer.parseInt(days
 						.split(" ")[i])]) {
@@ -84,24 +84,24 @@ public class ConcertOperation extends Thread {
 
 		if (Command.contains("[")) {
 			transactionId = Command.split(" ")[0];
-//			System.out.println("transactionId = " + transactionId);
+			// System.out.println("transactionId = " + transactionId);
 
 			String days = Command.split("\\[")[1].split("\\]")[0];
-//			System.out.println("days = " + days);
+			// System.out.println("days = " + days);
 
 			int numTicket = Integer.parseInt(Command.split(" ")[1]);
-//			System.out.println("numTicket = " + numTicket);
+			// System.out.println("numTicket = " + numTicket);
 
 			for (int i = 0; i < days.split(" ").length; i++) {
 				ticketAvailable[Integer.parseInt(days.split(" ")[i])] -= numTicket;
-//				System.out.println("Each day  = "
-//						+ Integer.parseInt(days.split(" ")[i]));
-//
-//				System.out
-//						.println("numavailable = "
-//								+ ticketAvailable[Integer.parseInt(days
-//										.split(" ")[i])]);
-				
+				// System.out.println("Each day  = "
+				// + Integer.parseInt(days.split(" ")[i]));
+				//
+				// System.out
+				// .println("numavailable = "
+				// + ticketAvailable[Integer.parseInt(days
+				// .split(" ")[i])]);
+
 			}
 		}
 	}

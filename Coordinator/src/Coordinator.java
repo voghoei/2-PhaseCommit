@@ -43,10 +43,10 @@ public class Coordinator {
 		
 		socketOpening();		
 
-		hotelIn = new Coordinator_Buffer_In_Hotel(hsoc,hqin);
-		concertIn = new Coordinator_Buffer_In_Concert(csoc,cqin);
-		outs = new Coordinator_Buffer_Out(hsoc, csoc,qout);	
-		operation = new  CoordinatorOperation(cqin,hqin,qout, brCoordinatorConfig);
+		hotelIn = new Coordinator_Buffer_In_Hotel(hsoc,hqin,status);
+		concertIn = new Coordinator_Buffer_In_Concert(csoc,cqin,status);
+		outs = new Coordinator_Buffer_Out(hsoc, csoc,qout,status);	
+		operation = new  CoordinatorOperation(cqin,hqin,qout, brCoordinatorConfig,status);
 	}
 
 	

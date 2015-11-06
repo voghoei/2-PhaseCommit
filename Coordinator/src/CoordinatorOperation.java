@@ -21,11 +21,13 @@ public class CoordinatorOperation extends Thread {
 	static BufferedReader brCoordinatorConfigLocal;
 	Hashtable<String, Boolean> commitHashtableConcert;
 	Hashtable<String, Boolean> commitHashtableHotel;
+	int statusLocal;
 
 	CoordinatorOperation(ConcurrentLinkedQueue<String> cqin,
 			ConcurrentLinkedQueue<String> hqin,
 			ConcurrentLinkedQueue<String> qout,
-			BufferedReader brCoordinatorConfig) {
+			BufferedReader brCoordinatorConfig, int status ) {
+		this.statusLocal=status;
 		brCoordinatorConfigLocal = brCoordinatorConfig;
 		commitHashtableConcert = new Hashtable<String, Boolean>();
 		commitHashtableHotel = new Hashtable<String, Boolean>();

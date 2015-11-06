@@ -21,8 +21,9 @@ public class HotelOperation extends Thread {
 	public void run() {
 		while (true) {
 			if (qinlocal.size() > 0) {
-				System.out.println("*****  qin value " + qinlocal.toString()
-						+ " qin size = " + qinlocal.size());
+				System.out.println("Hotel Opration qin while "
+						+ qinlocal.toString());
+				
 				String msg = qinlocal.poll();
 				switch (msg.split(":")[0]) {
 				case "VOTE-REQUEST":

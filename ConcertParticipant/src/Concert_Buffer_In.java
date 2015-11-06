@@ -7,11 +7,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Concert_Buffer_In extends Thread {
 	Socket csoc;
 	DataInputStream din;
-	String inputCommand;
 	ConcurrentLinkedQueue<String> qinlocal;
+	int statusLocal;
 
-	 Concert_Buffer_In(Socket csoc, ConcurrentLinkedQueue<String> qin) {
+	Concert_Buffer_In(Socket csoc, ConcurrentLinkedQueue<String> qin, int status) {
 		try {
+			this.statusLocal = status;
 			this.csoc = csoc;
 			this.qinlocal = qin;
 			din = new DataInputStream(csoc.getInputStream());
@@ -27,14 +28,18 @@ public class Concert_Buffer_In extends Thread {
 
 	public void run() {
 		try {
-
-			System.out.println("Concert Buffer In thread:  "
-					+ Thread.currentThread().getId());
+			String msg;
+			System.out.println("Concert Buffer In thread:  " + Thread.currentThread().getId());
 			while (true) {
-				inputCommand = din.readUTF();
-				System.out.println("Concert Buffer In while loop : " + inputCommand);
-				qinlocal.add(inputCommand);
-				//Thread.sleep(1000);
+				if (statusLocal == 1) {
+					msg = din.readUTF();
+					System.out.println("while concert in, Normal mode : " + msg);
+					qinlocal.add(msg);
+				} else {
+					msg = din.readUTF();
+					System.out.println("while concert in, Discarde Message " + msg);
+				}
+
 			}
 
 		} catch (Exception ex) {

@@ -13,11 +13,13 @@ public class Coordinator_Buffer_In_Hotel extends Thread {
 	DataInputStream hdin;
 	Socket hsoc;
 	ConcurrentLinkedQueue<String> hqinlocal;
+	int statusLocal;
 	
-	public Coordinator_Buffer_In_Hotel(Socket hsoc,ConcurrentLinkedQueue<String> hqin) {
+	public Coordinator_Buffer_In_Hotel(Socket hsoc,ConcurrentLinkedQueue<String> hqin, int status) {
 		try {
-			hsoc = hsoc;
-			hqinlocal = hqin;
+			this.statusLocal=status;
+			this.hsoc = hsoc;
+			this.hqinlocal = hqin;
 			hdin = new DataInputStream(hsoc.getInputStream());
 			System.out.println("Coordinator Hotel Buffer In Connected ...");
 			start();
@@ -29,24 +31,19 @@ public class Coordinator_Buffer_In_Hotel extends Thread {
 
 	public void run() {
 		try {
-			// table.put(Thread.currentThread().getId(), false);
+			String msg;
 			System.out.println("Coordinator Hotel Buffer In thread:  "
 					+ Thread.currentThread().getId());
-
-		} catch (Exception ex) {
-			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
-			// null, ex);
-		}
-		try {
+		
 			while (true) {
-
-
-				String Command = hdin.readUTF();
-				System.out.println("while coordinator hotel in  "+ Command);
-				hqinlocal.add(Command);
-
-
-
+				if(statusLocal == 1) {
+					msg= hdin.readUTF();
+				System.out.println("while coordinator hotel in , Normal mode  "+ msg);
+				hqinlocal.add(msg);
+			}else{
+				msg = hdin.readUTF();
+				System.out.println("while coordinator Hotel in, Discarde Message " + msg);
+			}
 			}
 		} catch (Exception ex) {
 			System.out.println("\t\t exp:  Coordinator Hotel Read ");
