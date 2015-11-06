@@ -1,18 +1,19 @@
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Hotel_Buffer_Out extends Thread {
 	Socket hsoc;
 	DataOutputStream dout;
 	ConcurrentLinkedQueue<String> qoutlocal;
+	int statusLocal;
 
-	Hotel_Buffer_Out(Socket hsoc, ConcurrentLinkedQueue<String> qout) {
+	Hotel_Buffer_Out(Socket hsoc, ConcurrentLinkedQueue<String> qout, int status) {
 		try {
-			this.qoutlocal = qout;
+			this.statusLocal = status;
 			this.hsoc = hsoc;
+			this.qoutlocal = qout;
 			dout = new DataOutputStream(hsoc.getOutputStream());
 			System.out.println("Hotel Buffer Out Connected ...");
 			start();
@@ -31,22 +32,21 @@ public class Hotel_Buffer_Out extends Thread {
 
 	public void run() {
 		try {
-			System.out.println("Hotel Buffer Out thread :  "
-					+ Thread.currentThread().getId());
+			String msg;
+			System.out.println("Hotel Buffer Out thread :  " + Thread.currentThread().getId());
 			while (true) {
 				if (qoutlocal.size() > 0) {
-					String msg = qoutlocal.poll();
-					dout.writeUTF(msg);
-					System.out.println("is not empty ....." + msg);
-//					Thread.sleep(1000);
+					if (statusLocal == 1) {
+						msg = qoutlocal.poll();
+						dout.writeUTF(msg);
+						System.out.println("Hotel Buffer Out, message" + msg);
+					} else {
+						qoutlocal.clear();
+						System.out.println("Hotel Buffer Out, qout clean ");
+					}
 				}
-				// else
-				// System.out.println("Hotel Buffer Out thread: qout empty ");
 			}
-
 		} catch (Exception ex) {
-			// Logger.getLogger(Transferfile.class.getName()).log(Level.SEVERE,
-			// null, ex);
 			System.out.println("exp: Hotel Buffer Out thread ");
 		}
 	}

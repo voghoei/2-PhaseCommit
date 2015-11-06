@@ -1,17 +1,17 @@
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Hotel_Buffer_In extends Thread {
 	Socket hsoc;
 	DataInputStream din;
-	String inputCommand;
 	ConcurrentLinkedQueue<String> qinlocal;
+	int statusLocal;
 
-	Hotel_Buffer_In(Socket hsoc, ConcurrentLinkedQueue<String> qin) {
+	Hotel_Buffer_In(Socket hsoc, ConcurrentLinkedQueue<String> qin, int status) {
 		try {
+			this.statusLocal = status;
 			this.hsoc = hsoc;
 			this.qinlocal = qin;
 			din = new DataInputStream(hsoc.getInputStream());
@@ -27,15 +27,18 @@ public class Hotel_Buffer_In extends Thread {
 
 	public void run() {
 		try {
-
-			System.out.println("Hotel Buffer In thread:  "
-					+ Thread.currentThread().getId());
+			String msg;
+			System.out.println("Hotel Buffer In thread:  " + Thread.currentThread().getId());
 			while (true) {
-				inputCommand = din.readUTF();
-//				System.out.println("&&&&&&&&  read: " + inputCommand);
-				System.out.println("Hotel Buffer In while loop : " + inputCommand);
-				qinlocal.add(inputCommand);
-				//Thread.sleep(1000);
+				if (statusLocal == 1) {
+					msg = din.readUTF();
+					System.out.println("while Hotel in, Normal mode : " + msg);
+					qinlocal.add(msg);
+				} else {
+					msg = din.readUTF();
+					System.out.println("while Hotel in, Discarde Message " + msg);
+				}
+
 			}
 
 		} catch (Exception ex) {

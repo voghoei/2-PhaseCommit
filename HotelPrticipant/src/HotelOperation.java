@@ -11,7 +11,8 @@ public class HotelOperation extends Thread {
 	ConcurrentLinkedQueue<String> qinlocal;
 	ConcurrentLinkedQueue<String> qoutlocal;
 
-	HotelOperation(ConcurrentLinkedQueue<String> qin, ConcurrentLinkedQueue<String> qout) {
+	HotelOperation(ConcurrentLinkedQueue<String> qin,
+			ConcurrentLinkedQueue<String> qout, int status) {
 		this.qinlocal = qin;
 		this.qoutlocal = qout;
 		hotelConfig();
@@ -39,11 +40,10 @@ public class HotelOperation extends Thread {
 					System.out.println("GLOBAL-COMMIT");
 					deductTicket(msg);
 					break;
-					
+
 				case "GLOBAL-ABORT":
 					System.out.println("GLOBAL-ABORT");
 					break;
-					
 
 				}
 			}
@@ -52,27 +52,26 @@ public class HotelOperation extends Thread {
 
 	public static boolean checkavailabality(String Command) {
 		boolean flag = true;
-		System.out.println("Hotel Buffer In. Run : Command = " + Command);
 		if (Command.contains("[")) {
 			transactionId = Command.split(" ")[0];
-//			System.out.println("transactionId = " + transactionId);
+			// System.out.println("transactionId = " + transactionId);
 
 			String days = Command.split("\\[")[1].split("\\]")[0];
-//			System.out.println("days = " + days);
+			// System.out.println("days = " + days);
 
-			int numRoom = Integer.parseInt(Command.split(" ")[1]);
-//			System.out.println("numRoom = " + numRoom);
+			int numTicket = Integer.parseInt(Command.split(" ")[1]);
+			// System.out.println("numTicket = " + numTicket);
 
 			for (int i = 0; i < days.split(" ").length; i++) {
-//				System.out.println("Each day  = "
-//						+ Integer.parseInt(days.split(" ")[i]));
-//
-//				System.out
-//				.println("roomAvailable = "
-//						+ roomAvailable[Integer.parseInt(days
-//								.split(" ")[i])]);
+				// System.out.println("Each day  = "
+				// + Integer.parseInt(days.split(" ")[i]));
+				//
+				// System.out
+				// .println("numavailable = "
+				// + ticketAvailable[Integer.parseInt(days
+				// .split(" ")[i])]);
 
-				if (numRoom > roomAvailable[Integer.parseInt(days
+				if (numTicket > roomAvailable[Integer.parseInt(days
 						.split(" ")[i])]) {
 					flag = false;
 				}
@@ -85,28 +84,28 @@ public class HotelOperation extends Thread {
 
 		if (Command.contains("[")) {
 			transactionId = Command.split(" ")[0];
-//			System.out.println("transactionId = " + transactionId);
+			// System.out.println("transactionId = " + transactionId);
 
 			String days = Command.split("\\[")[1].split("\\]")[0];
-//			System.out.println("days = " + days);
+			// System.out.println("days = " + days);
 
 			int numTicket = Integer.parseInt(Command.split(" ")[1]);
-//			System.out.println("numTicket = " + numTicket);
+			// System.out.println("numTicket = " + numTicket);
 
 			for (int i = 0; i < days.split(" ").length; i++) {
 				roomAvailable[Integer.parseInt(days.split(" ")[i])] -= numTicket;
-//				System.out.println("Each day  = "
-//						+ Integer.parseInt(days.split(" ")[i]));
-//
-//				System.out
-//						.println("numavailable = "
-//								+ roomAvailable[Integer.parseInt(days
-//										.split(" ")[i])]);
-//				
+				// System.out.println("Each day  = "
+				// + Integer.parseInt(days.split(" ")[i]));
+				//
+				// System.out
+				// .println("numavailable = "
+				// + ticketAvailable[Integer.parseInt(days
+				// .split(" ")[i])]);
+
 			}
 		}
 	}
-	
+
 	public static void hotelConfig() {
 		try {
 			BufferedReader brHotel = new BufferedReader(
