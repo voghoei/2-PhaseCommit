@@ -6,7 +6,6 @@ import java.util.Hashtable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javafx.util.Pair;
 
 public class CoordinatorOperation extends Thread {
 	static String transactionId;
@@ -47,16 +46,23 @@ public class CoordinatorOperation extends Thread {
 					fstreamCoordinateFile));
 			
 			while ((reservation = brCoordinator.readLine()) != null) {
-	
+				if (statusLocal != 1) {
+					while (true) {
+						Thread.sleep(100);
+					}
+				}
 				qoutlocal.add("VOTE-REQUEST:" + reservation);
 				System.out.println("VOTE-REQUEST added to local cout");
 				
 				transactionFlag = true;
 				
 				while (transactionFlag) {
+					if (statusLocal != 1) {
+						while (true) {
+							Thread.sleep(100);
+						}
+					}
 					if (cqinlocal.size() > 0) {
-//						System.out.println("Coordinator Opration cqin commit "
-//								+ cqinlocal.toString());
 						String msg = cqinlocal.poll();
 						System.out.println("Message " + msg);
 
@@ -71,15 +77,11 @@ public class CoordinatorOperation extends Thread {
 									msg.split(":")[1].split(" ")[0], false);
 							break;
 						}
-//						System.out.println("commitHashtableConcert value :  "
-//								+ commitHashtableConcert.toString());
 					}
 					if (hqinlocal.size() > 0) {
 						System.out.println("Coordinator Opration hqin commit "
 								+ hqinlocal.toString());
 						String msg = hqinlocal.poll();
-
-//						System.out.println("Message " + msg);
 
 						switch (msg.split(":")[0]) {
 						case "VOTE-COMMIT":
@@ -91,8 +93,6 @@ public class CoordinatorOperation extends Thread {
 									msg.split(":")[1].split(" ")[0], false);
 							break;
 						}
-//						System.out.println("commitHashtableHotel value :  "
-//								+ commitHashtableHotel.toString());
 					}
 
 					if (commitHashtableConcert.get(reservation.split(" ")[0]) != null
@@ -103,7 +103,6 @@ public class CoordinatorOperation extends Thread {
 								&& commitHashtableHotel.get(reservation
 										.split(" ")[0])) {
 							qoutlocal.add("GLOBAL-COMMIT:" + reservation);
-							//System.out.println("commitHas");
 						} else {
 							qoutlocal.add("GLOBAL-ABORT:" + reservation);
 						}
@@ -111,15 +110,24 @@ public class CoordinatorOperation extends Thread {
 								.remove(reservation.split(" ")[0]);
 						commitHashtableHotel.remove(reservation.split(" ")[0]);
 						transactionFlag = false;
-
 					}
 				}
-
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (InterruptedException ex) {
+			System.out.println("exp : Callee  ");
+			try {
+				while (true) {
+					System.out.println("sleep ");
+					Thread.sleep(100);
+				}
+			} catch (InterruptedException ex1) {
+				System.out.println("awaik ");
+				statusLocal = 1;
+			}
+
 		}
 
 	}

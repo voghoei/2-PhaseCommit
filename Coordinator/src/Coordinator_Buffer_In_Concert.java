@@ -37,8 +37,14 @@ public class Coordinator_Buffer_In_Concert extends Thread {
 					msg = cdin.readUTF();
 					System.out.println("while coordinator concert in, Discarde Message " + msg);
 				}
+				sleep(1);
 			}
-		} catch (Exception ex) {
+			
+		} 
+		catch (InterruptedException ex) {
+			System.out.println("\t exp:  Coordinator Concert Read  ");
+		} 
+		catch (Exception ex) {
 			System.out.println("\t exp:  Coordinator Concert Read  ");
 		}
 	}

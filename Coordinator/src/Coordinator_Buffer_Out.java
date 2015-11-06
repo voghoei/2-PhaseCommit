@@ -30,7 +30,6 @@ public class Coordinator_Buffer_Out extends Thread {
 		try {
 			String msg;
 			System.out.println("Coordinator Buffer Out thread:  " + Thread.currentThread().getId());
-			qoutlocal.clear();
 			while (true) {
 				if (qoutlocal.size() > 0) {
 					if (statusLocal == 1) {

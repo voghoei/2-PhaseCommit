@@ -10,9 +10,10 @@ public class HotelOperation extends Thread {
 	static int[] roomAvailable;
 	ConcurrentLinkedQueue<String> qinlocal;
 	ConcurrentLinkedQueue<String> qoutlocal;
+	int statusLocal;
 
-	HotelOperation(ConcurrentLinkedQueue<String> qin,
-			ConcurrentLinkedQueue<String> qout, int status) {
+	HotelOperation(ConcurrentLinkedQueue<String> qin, ConcurrentLinkedQueue<String> qout, int status) {
+		this.statusLocal = status;
 		this.qinlocal = qin;
 		this.qoutlocal = qout;
 		hotelConfig();
@@ -21,31 +22,50 @@ public class HotelOperation extends Thread {
 
 	public void run() {
 		while (true) {
-			if (qinlocal.size() > 0) {
-				System.out.println("Hotel Opration qin while "
-						+ qinlocal.toString());
-				
-				String msg = qinlocal.poll();
-				switch (msg.split(":")[0]) {
-				case "VOTE-REQUEST":
-					if (checkavailabality(msg.split(":")[1])) {
-						System.out.println("Commit");
-						qoutlocal.add("VOTE-COMMIT:" + msg.split(":")[1]);
-					} else {
-						System.out.println("Abort");
-						qoutlocal.add("VOTE-ABORT:" + msg.split(":")[1]);
+			try {
+
+				if (statusLocal != 1) {
+					while (true) {
+						Thread.sleep(100);
 					}
-					break;
-				case "GLOBAL-COMMIT":
-					System.out.println("GLOBAL-COMMIT");
-					deductTicket(msg);
-					break;
-
-				case "GLOBAL-ABORT":
-					System.out.println("GLOBAL-ABORT");
-					break;
-
 				}
+				if (qinlocal.size() > 0) {
+					System.out.println("Hotel Opration qin while " + qinlocal.toString());
+
+					String msg = qinlocal.poll();
+					switch (msg.split(":")[0]) {
+					case "VOTE-REQUEST":
+						if (checkavailabality(msg.split(":")[1])) {
+							System.out.println("Commit");
+							qoutlocal.add("VOTE-COMMIT:" + msg.split(":")[1]);
+						} else {
+							System.out.println("Abort");
+							qoutlocal.add("VOTE-ABORT:" + msg.split(":")[1]);
+						}
+						break;
+					case "GLOBAL-COMMIT":
+						System.out.println("GLOBAL-COMMIT");
+						deductTicket(msg);
+						break;
+
+					case "GLOBAL-ABORT":
+						System.out.println("GLOBAL-ABORT");
+						break;
+
+					}
+				}
+			} catch (InterruptedException ex) {
+				System.out.println("exp : Callee  ");
+				try {
+					while (true) {
+						System.out.println("sleep ");
+						Thread.sleep(100);
+					}
+				} catch (InterruptedException ex1) {
+					System.out.println("awaik ");
+					statusLocal = 1;
+				}
+
 			}
 		}
 	}
@@ -71,8 +91,7 @@ public class HotelOperation extends Thread {
 				// + ticketAvailable[Integer.parseInt(days
 				// .split(" ")[i])]);
 
-				if (numTicket > roomAvailable[Integer.parseInt(days
-						.split(" ")[i])]) {
+				if (numTicket > roomAvailable[Integer.parseInt(days.split(" ")[i])]) {
 					flag = false;
 				}
 			}
@@ -108,14 +127,11 @@ public class HotelOperation extends Thread {
 
 	public static void hotelConfig() {
 		try {
-			BufferedReader brHotel = new BufferedReader(
-					new InputStreamReader(new FileInputStream(
-							"hotel-configuration-file.txt")));
+			BufferedReader brHotel = new BufferedReader(new InputStreamReader(new FileInputStream("hotel-configuration-file.txt")));
 			roomAvailable = new int[10];
 			brHotel.readLine();
 			for (int i = 0; i < 10; i++) {
-				roomAvailable[i] = Integer.parseInt(brHotel.readLine()
-						.split(" ")[1]);
+				roomAvailable[i] = Integer.parseInt(brHotel.readLine().split(" ")[1]);
 			}
 
 		} catch (IOException e) {
