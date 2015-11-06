@@ -27,7 +27,7 @@ public class Concert_Communication_Substrate {
 			Concert_Buffer_In in = new Concert_Buffer_In(cSoc, qin,status);
 			Concert_Buffer_Out out = new Concert_Buffer_Out(cSoc, qout,status);
 			ConcertOperation opt = new ConcertOperation(qin, qout,status);
-			Thread.ge
+			
 			
 			
 
