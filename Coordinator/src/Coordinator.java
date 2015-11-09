@@ -3,6 +3,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.io.*;
 
 import javafx.util.Pair;
@@ -24,7 +25,7 @@ public class Coordinator {
 	// Log file
 
 	//
-	static int status;
+	static AtomicInteger status;
 
 	// Input coordinate file
 	static FileInputStream fstreamCoordinateConfigFile = null;
@@ -38,7 +39,7 @@ public class Coordinator {
 	static ConcurrentLinkedQueue<String> qout;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		status = 1;
+		status.set(1);
 		hqin = new ConcurrentLinkedQueue<String>();
 		cqin = new ConcurrentLinkedQueue<String>();
 		qout = new ConcurrentLinkedQueue<String>();
@@ -56,14 +57,14 @@ public class Coordinator {
 			interuptMessage = bufferRead.readLine();
 
 			if (interuptMessage.equalsIgnoreCase("F")) {
-				if (status == 1) {
-					status = 0;
+				if (status.get() == 1) {
+					status.set(0);
 					operation.interrupt();
 				}
 			}
 			if (interuptMessage.equalsIgnoreCase("R")) {
-				if (status == 0) {
-					status = 2;
+				if (status.get() == 0) {
+					status.set(2);
 					operation.interrupt();
 
 				}

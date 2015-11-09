@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.Hashtable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoordinatorOperation extends Thread {
 	static String transactionId;
@@ -22,10 +23,10 @@ public class CoordinatorOperation extends Thread {
 	static BufferedReader brCoordinatorConfigLocal;
 	Hashtable<String, Boolean> commitHashtableConcert;
 	Hashtable<String, Boolean> commitHashtableHotel;
-	int statusLocal;
+	AtomicInteger statusLocal;
 
 	CoordinatorOperation(ConcurrentLinkedQueue<String> cqin, ConcurrentLinkedQueue<String> hqin, ConcurrentLinkedQueue<String> qout,
-			BufferedReader brCoordinatorConfig, int status) throws IOException {
+			BufferedReader brCoordinatorConfig, AtomicInteger status) throws IOException {
 		this.statusLocal = status;
 		brCoordinatorConfigLocal = brCoordinatorConfig;
 		commitHashtableConcert = new Hashtable<String, Boolean>();
@@ -45,7 +46,7 @@ public class CoordinatorOperation extends Thread {
 			brCoordinator = new BufferedReader(new InputStreamReader(fstreamCoordinateFile));
 
 			while ((reservation = brCoordinator.readLine()) != null) {
-				if (statusLocal != 1) {
+				if (!(statusLocal.get() == 1)) {
 					while (true) {
 						Thread.sleep(100);
 					}
@@ -57,7 +58,7 @@ public class CoordinatorOperation extends Thread {
 				transactionFlag = true;
 
 				while (transactionFlag) {
-					if (statusLocal != 1) {
+					if (!(statusLocal.get() == 1)) {
 						while (true) {
 							Thread.sleep(100);
 						}
@@ -118,7 +119,7 @@ public class CoordinatorOperation extends Thread {
 				}
 			} catch (InterruptedException ex1) {
 				System.out.println("awaik ");
-				statusLocal = 1;
+				statusLocal.set(1);
 			}
 		}
 	}

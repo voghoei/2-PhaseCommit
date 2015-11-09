@@ -2,6 +2,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Coordinator_Buffer_Out extends Thread {
 	Socket hsoc;
@@ -9,9 +10,9 @@ public class Coordinator_Buffer_Out extends Thread {
 	DataOutputStream hdout;
 	DataOutputStream cdout;
 	ConcurrentLinkedQueue<String> qoutlocal;
-	int statusLocal;
+	AtomicInteger statusLocal;
 
-	public Coordinator_Buffer_Out(Socket hsoc, Socket csoc, ConcurrentLinkedQueue<String> qout, int status) {
+	public Coordinator_Buffer_Out(Socket hsoc, Socket csoc, ConcurrentLinkedQueue<String> qout, AtomicInteger status) {
 		try {
 			this.statusLocal = status;
 			this.qoutlocal = qout;
@@ -32,7 +33,7 @@ public class Coordinator_Buffer_Out extends Thread {
 			System.out.println("Coordinator Buffer Out thread:  " + Thread.currentThread().getId());
 			while (true) {
 				if (qoutlocal.size() > 0) {
-					if (statusLocal == 1) {
+					if (statusLocal.get() == 1) {
 						msg = qoutlocal.poll();
 						cdout.writeUTF(msg);
 						hdout.writeUTF(msg);

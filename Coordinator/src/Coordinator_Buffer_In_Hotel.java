@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.Hashtable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.util.Pair;
 
@@ -13,9 +14,9 @@ public class Coordinator_Buffer_In_Hotel extends Thread {
 	DataInputStream hdin;
 	Socket hsoc;
 	ConcurrentLinkedQueue<String> hqinlocal;
-	int statusLocal;
+	AtomicInteger statusLocal;
 	
-	public Coordinator_Buffer_In_Hotel(Socket hsoc,ConcurrentLinkedQueue<String> hqin, int status) {
+	public Coordinator_Buffer_In_Hotel(Socket hsoc,ConcurrentLinkedQueue<String> hqin, AtomicInteger status) {
 		try {
 			this.statusLocal=status;
 			this.hsoc = hsoc;
@@ -36,7 +37,7 @@ public class Coordinator_Buffer_In_Hotel extends Thread {
 					+ Thread.currentThread().getId());
 		
 			while (true) {
-				if(statusLocal == 1) {
+				if(statusLocal.get() == 1) {
 					msg= hdin.readUTF();
 				System.out.println("while coordinator hotel in , Normal mode  "+ msg);
 				hqinlocal.add(msg);
