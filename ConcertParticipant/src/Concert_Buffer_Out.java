@@ -3,16 +3,17 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Concert_Buffer_Out extends Thread {
 	Socket csoc;
 	DataOutputStream dout;
 	ConcurrentLinkedQueue<String> qoutlocal;
-	int statusLocal;
+	AtomicInteger statusLocal;
 
-	Concert_Buffer_Out(Socket csoc, ConcurrentLinkedQueue<String> qout, int status) {
+	Concert_Buffer_Out(Socket csoc, ConcurrentLinkedQueue<String> qout, AtomicInteger status) {
 		try {
-			this.statusLocal = status;
+			this.statusLocal=status;
 			this.csoc = csoc;
 			this.qoutlocal = qout;
 			dout = new DataOutputStream(csoc.getOutputStream());
@@ -37,7 +38,7 @@ public class Concert_Buffer_Out extends Thread {
 			System.out.println("Concert Buffer Out thread :  " + Thread.currentThread().getId());
 			while (true) {
 				if (qoutlocal.size() > 0) {
-					if (statusLocal == 1) {
+					if (statusLocal.get()==1) {
 						msg = qoutlocal.poll();
 						dout.writeUTF(msg);
 						System.out.println("Concert Buffer Out, message" + msg);

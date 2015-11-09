@@ -1,32 +1,38 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConcertOperation extends Thread {
 	static String transactionId;
 	static int[] ticketAvailable;
 	ConcurrentLinkedQueue<String> qinlocal;
 	ConcurrentLinkedQueue<String> qoutlocal;
-	
-	
-	
-	int statusLocal;
 
-	ConcertOperation(ConcurrentLinkedQueue<String> qin, ConcurrentLinkedQueue<String> qout, int status) {
-		this.statusLocal = status;
+	AtomicInteger statusLocal;
+	String LastLog;
+	
+	ConcertOperation(ConcurrentLinkedQueue<String> qin, ConcurrentLinkedQueue<String> qout, AtomicInteger status) throws IOException {
+		this.statusLocal= status;
 		this.qinlocal = qin;
 		this.qoutlocal = qout;
+				
 		concertConfig();
+		logDelete();
 		start();
 	}
 
 	public void run() {
 		while (true) {
 			try {
-				if (statusLocal != 1) {
+				if (!(statusLocal.get()==1)) {
 					while (true) {
 						Thread.sleep(100);
 					}
@@ -34,46 +40,76 @@ public class ConcertOperation extends Thread {
 				if (qinlocal.size() > 0) {
 					System.out.println("Concert Opration qin while " + qinlocal.toString());
 					String msg = qinlocal.poll();
-					switch (msg.split(":")[0]) {
+					switch (msg.split(":")[0]) {					
 					case "VOTE-REQUEST":
+						logHandeler("VOTE-REQUEST:" + msg.split(":")[1]);
+
 						if (checkavailabality(msg.split(":")[1])) {
 							System.out.println("Commit");
 							qoutlocal.add("VOTE-COMMIT:" + msg.split(":")[1]);
+							logHandeler("VOTE-COMMIT:" + msg.split(":")[1]);
 						} else {
 							System.out.println("Abort");
 							qoutlocal.add("VOTE-ABORT:" + msg.split(":")[1]);
+							logHandeler("VOTE-ABORT:" + msg.split(":")[1]);
 						}
 						break;
 					case "GLOBAL-COMMIT":
 						System.out.println("GLOBAL-COMMIT");
+						logHandeler("GLOBAL-COMMI:" + msg.split(":")[1]);
 						deductTicket(msg);
+						LastLog= ticketAvailable.toString();
 						break;
 
 					case "GLOBAL-ABORT":
 						System.out.println("GLOBAL-ABORT");
+						logHandeler("GLOBAL-ABORT:" + msg.split(":")[1]);
 						break;
 
 					}
 				}
 			} catch (InterruptedException ex) {
-				System.out.println("exp : Callee  ");
+				System.out.println("exp : intrupt concert operation catch  ");
 				try {
 					while (true) {
 						System.out.println("sleep ");
 						Thread.sleep(100);
 					}
 				} catch (InterruptedException ex1) {
-					System.out.println("awaik ");
-					statusLocal = 1;
+					System.out.println("awake ");
+					statusLocal.set(1);
 				}
 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
 	}
-	
-	public static void logHandeler(){
+
+	public static void logHandeler(String msg) throws IOException {
+
+		File file = new File("concertLog.txt");
+		// if file doesnt exists, then create it
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		FileWriter fw = new FileWriter(file,true);
+		BufferedWriter bw = new BufferedWriter(fw);
 		
+		bw.write(msg);
+		bw.newLine();
+		bw.close();
+		fw.close();
+
+	}
+	
+	public static void logDelete() throws IOException {
+		File file = new File("concertLog.txt");
+		if (file.exists()) {
+			file.delete();
+		}
 	}
 
 	public static boolean checkavailabality(String Command) {
@@ -99,7 +135,6 @@ public class ConcertOperation extends Thread {
 			int numTicket = Integer.parseInt(Command.split(" ")[1]);
 			for (int i = 0; i < days.split(" ").length; i++) {
 				ticketAvailable[Integer.parseInt(days.split(" ")[i])] -= numTicket;
-
 			}
 		}
 	}
