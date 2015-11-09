@@ -20,11 +20,13 @@ public class ConcertOperation extends Thread {
 	static String LastLog;
 
 	ConcertOperation(ConcurrentLinkedQueue<String> qin, ConcurrentLinkedQueue<String> qout, AtomicInteger status) throws IOException {
+
 		this.statusLocal = status;
 		this.qinlocal = qin;
 		this.qoutlocal = qout;
 
 		concertConfig();
+		LastLog = toString(ticketAvailable);
 		logDelete();
 		start();
 	}
@@ -58,7 +60,7 @@ public class ConcertOperation extends Thread {
 						System.out.println("GLOBAL-COMMIT");
 						logHandeler("GLOBAL-COMMI:" + msg.split(":")[1]);
 						deductTicket(msg);
-						LastLog = ticketAvailable.toString();
+						LastLog = toString(ticketAvailable);
 						break;
 
 					case "GLOBAL-ABORT":
@@ -70,6 +72,7 @@ public class ConcertOperation extends Thread {
 				}
 			} catch (InterruptedException ex) {
 				System.out.println("exp : intrupt concert operation catch  ");
+				failOpration();
 				try {
 					while (true) {
 						System.out.println("sleep ");
@@ -99,20 +102,15 @@ public class ConcertOperation extends Thread {
 		for (int i = 0; i < 10; i++) {
 			ticketAvailable[i] = 0;
 		}
-		System.out.println("ticketAvailable : " + ticketAvailable.toString());
-
 	}
 
 	public static void recoveryOpration() {
 		System.out.println("recover the ticketAvailable and restart buffer in");
 
-		String[] days = LastLog.substring(1, LastLog.length() - 1).split(", ");
-		for (int i = 0; i < days.length; i++) {
+		String[] days = LastLog.split(",");
+		for (int i = 0; i < 10; i++) {
 			ticketAvailable[i] = Integer.parseInt(days[i]);
 		}
-
-		System.out.println("ticketAvailable : " + ticketAvailable.toString());
-
 	}
 
 	public static void logHandeler(String msg) throws IOException {
@@ -173,6 +171,7 @@ public class ConcertOperation extends Thread {
 			brConcert.readLine();
 			for (int i = 0; i < 10; i++) {
 				ticketAvailable[i] = Integer.parseInt(brConcert.readLine().split(" ")[1]);
+				System.out.println("^^^^^^^^"+ticketAvailable[i]);
 			}
 
 		} catch (IOException e) {
@@ -180,5 +179,14 @@ public class ConcertOperation extends Thread {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static String toString(int[] a) {
+		String stringArray = "";
+		for (int i = 0; i < 10; i++) {
+			stringArray += a[i] + ",";
+			System.out.println("******"+a[i]);
+		}
+		return stringArray.substring(0,stringArray.length()-1);
 	}
 }

@@ -17,7 +17,7 @@ public class Hotel_Communication_Substrate {
 
 	public static void main(String[] args) throws InterruptedException {
 		try {
-			status.set(1);
+			status = new AtomicInteger(1);
 			qin = new ConcurrentLinkedQueue<String>();
 			qout = new ConcurrentLinkedQueue<String>();
 			hotelSoc = new ServerSocket(5218);

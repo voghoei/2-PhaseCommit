@@ -61,14 +61,14 @@ public class Concert_Communication_Substrate {
 			bufferRead = new BufferedReader(new InputStreamReader(System.in));
 			interuptMessage = bufferRead.readLine();
 			if (interuptMessage.equalsIgnoreCase("F")) {
-				if (status.equals(1)) {
+				if (status.get()==1) {
 					status.set(0);
 					opt.interrupt();
 					System.out.println("status = "+ status);
 				}
 				}
 			if (interuptMessage.equalsIgnoreCase("R")) {
-				if (status.get()==0) {
+				if (status.get()== 0) {
 					status.set(2);
 					opt.interrupt();						
 				}					

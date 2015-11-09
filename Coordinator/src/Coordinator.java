@@ -39,7 +39,7 @@ public class Coordinator {
 	static ConcurrentLinkedQueue<String> qout;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		status.set(1);
+		status = new AtomicInteger(1);
 		hqin = new ConcurrentLinkedQueue<String>();
 		cqin = new ConcurrentLinkedQueue<String>();
 		qout = new ConcurrentLinkedQueue<String>();
