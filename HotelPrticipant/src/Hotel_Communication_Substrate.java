@@ -36,12 +36,12 @@ public class Hotel_Communication_Substrate {
 			in = new Hotel_Buffer_In(hSoc, qin, status);
 			out = new Hotel_Buffer_Out(hSoc, qout, status);
 			opt = new HotelOperation(qin, qout, status);
-			
-			//test 
-			status.set(0);
-			Thread.sleep(20);
-			opt.interrupt();
-			//end Test
+//			
+//			//test 
+//			status.set(0);
+//			Thread.sleep(20);
+//			opt.interrupt();
+//			//end Test
 			
 			
 			InteruptHandeling();

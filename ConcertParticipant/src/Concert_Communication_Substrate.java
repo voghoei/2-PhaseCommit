@@ -39,12 +39,12 @@ public class Concert_Communication_Substrate {
 			out = new Concert_Buffer_Out(cSoc, qout, status);
 			opt = new ConcertOperation(qin, qout, status);
 			
-			//test 
-			status.set(0);
-			Thread.sleep(20);
-			opt.interrupt();
-			//end Test
-			
+//			//test 
+//			status.set(0);
+//			Thread.sleep(20);
+//			opt.interrupt();
+//			//end Test
+//			
 			
 			InteruptHandeling();
 			

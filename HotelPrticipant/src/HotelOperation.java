@@ -168,8 +168,7 @@ public class HotelOperation extends Thread {
 			roomAvailable = new int[10];
 			brHotel.readLine();
 			for (int i = 0; i < 10; i++) {
-				roomAvailable[i] = Integer.parseInt(brHotel.readLine().split(" ")[1]);
-				System.out.println("ΩΩΩΩΩΩΩΩΩΩ"+roomAvailable[i]);
+				roomAvailable[i] = Integer.parseInt(brHotel.readLine().split(" ")[1]);				
 			}
 
 		} catch (IOException e) {
@@ -182,8 +181,7 @@ public class HotelOperation extends Thread {
 	public static String toString(int[] a) {
 		String stringArray = "";
 		for (int i = 0; i < 10; i++) {
-			stringArray += a[i] + ",";
-			System.out.println("ßßßßßßßßß"+a[i]);
+			stringArray += a[i] + ",";			
 		}
 		return stringArray.substring(0,stringArray.length()-1);
 	}

@@ -170,8 +170,7 @@ public class ConcertOperation extends Thread {
 			ticketAvailable = new int[10];
 			brConcert.readLine();
 			for (int i = 0; i < 10; i++) {
-				ticketAvailable[i] = Integer.parseInt(brConcert.readLine().split(" ")[1]);
-				System.out.println("^^^^^^^^"+ticketAvailable[i]);
+				ticketAvailable[i] = Integer.parseInt(brConcert.readLine().split(" ")[1]);				
 			}
 
 		} catch (IOException e) {
@@ -184,8 +183,7 @@ public class ConcertOperation extends Thread {
 	public static String toString(int[] a) {
 		String stringArray = "";
 		for (int i = 0; i < 10; i++) {
-			stringArray += a[i] + ",";
-			System.out.println("******"+a[i]);
+			stringArray += a[i] + ",";			
 		}
 		return stringArray.substring(0,stringArray.length()-1);
 	}
