@@ -13,17 +13,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ConcertOperation extends Thread {
 	static String transactionId;
 	static int[] ticketAvailable;
-	ConcurrentLinkedQueue<String> qinlocal;
-	ConcurrentLinkedQueue<String> qoutlocal;
+	static ConcurrentLinkedQueue<String> qinlocal;
+	static ConcurrentLinkedQueue<String> qoutlocal;
 
 	AtomicInteger statusLocal;
-	String LastLog;
-	
+	static String LastLog;
+
 	ConcertOperation(ConcurrentLinkedQueue<String> qin, ConcurrentLinkedQueue<String> qout, AtomicInteger status) throws IOException {
-		this.statusLocal= status;
+		this.statusLocal = status;
 		this.qinlocal = qin;
 		this.qoutlocal = qout;
-				
+
 		concertConfig();
 		logDelete();
 		start();
@@ -32,7 +32,7 @@ public class ConcertOperation extends Thread {
 	public void run() {
 		while (true) {
 			try {
-				if (!(statusLocal.get()==1)) {
+				if (!(statusLocal.get() == 1)) {
 					while (true) {
 						Thread.sleep(100);
 					}
@@ -40,7 +40,7 @@ public class ConcertOperation extends Thread {
 				if (qinlocal.size() > 0) {
 					System.out.println("Concert Opration qin while " + qinlocal.toString());
 					String msg = qinlocal.poll();
-					switch (msg.split(":")[0]) {					
+					switch (msg.split(":")[0]) {
 					case "VOTE-REQUEST":
 						logHandeler("VOTE-REQUEST:" + msg.split(":")[1]);
 
@@ -58,7 +58,7 @@ public class ConcertOperation extends Thread {
 						System.out.println("GLOBAL-COMMIT");
 						logHandeler("GLOBAL-COMMI:" + msg.split(":")[1]);
 						deductTicket(msg);
-						LastLog= ticketAvailable.toString();
+						LastLog = ticketAvailable.toString();
 						break;
 
 					case "GLOBAL-ABORT":
@@ -77,6 +77,7 @@ public class ConcertOperation extends Thread {
 					}
 				} catch (InterruptedException ex1) {
 					System.out.println("awake ");
+					recoveryOpration();
 					statusLocal.set(1);
 				}
 
@@ -88,6 +89,32 @@ public class ConcertOperation extends Thread {
 
 	}
 
+	public static void failOpration() {
+
+		System.out.println("Cleaning all buffers and memories");
+
+		qinlocal.clear();
+
+		// Clean ticketAvailable
+		for (int i = 0; i < 10; i++) {
+			ticketAvailable[i] = 0;
+		}
+		System.out.println("ticketAvailable : " + ticketAvailable.toString());
+
+	}
+
+	public static void recoveryOpration() {
+		System.out.println("recover the ticketAvailable and restart buffer in");
+
+		String[] days = LastLog.substring(1, LastLog.length() - 1).split(", ");
+		for (int i = 0; i < days.length; i++) {
+			ticketAvailable[i] = Integer.parseInt(days[i]);
+		}
+
+		System.out.println("ticketAvailable : " + ticketAvailable.toString());
+
+	}
+
 	public static void logHandeler(String msg) throws IOException {
 
 		File file = new File("concertLog.txt");
@@ -95,16 +122,16 @@ public class ConcertOperation extends Thread {
 		if (!file.exists()) {
 			file.createNewFile();
 		}
-		FileWriter fw = new FileWriter(file,true);
+		FileWriter fw = new FileWriter(file, true);
 		BufferedWriter bw = new BufferedWriter(fw);
-		
+
 		bw.write(msg);
 		bw.newLine();
 		bw.close();
 		fw.close();
 
 	}
-	
+
 	public static void logDelete() throws IOException {
 		File file = new File("concertLog.txt");
 		if (file.exists()) {
