@@ -75,7 +75,7 @@ public class HotelOperation extends Thread {
 					}
 				} catch (InterruptedException ex1) {
 					System.out.println("awake ");
-					statusLocal = 1;
+					statusLocal.set(1);
 				}
 
 			} catch (IOException e) {

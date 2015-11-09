@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Hotel_Communication_Substrate {
 	static Socket hSoc;
@@ -12,11 +13,11 @@ public class Hotel_Communication_Substrate {
 	static ConcurrentLinkedQueue<String> qout;
 	static BufferedReader bufferRead;
 	static String interuptMessage;
-	static int status;
+	static AtomicInteger status;
 
 	public static void main(String[] args) throws InterruptedException {
 		try {
-			status = 1;
+			status.set(1);
 			qin = new ConcurrentLinkedQueue<String>();
 			qout = new ConcurrentLinkedQueue<String>();
 			hotelSoc = new ServerSocket(5218);
@@ -34,15 +35,15 @@ public class Hotel_Communication_Substrate {
 
 				if (interuptMessage.equalsIgnoreCase("F")) {
 
-					if (status == 1) {
-						status = 0;
+					if (status.get() == 1) {
+						status.set(0);
 						Thread.sleep(200);
 						opt.interrupt();
 					}
 				}
 				if (interuptMessage.equalsIgnoreCase("R")) {
-					if (status == 0) {
-						status = 2;
+					if (status.get() == 0) {
+						status.set(2);
 						Thread.sleep(200);
 						opt.interrupt();
 					}

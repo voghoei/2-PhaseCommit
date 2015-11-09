@@ -2,14 +2,15 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Hotel_Buffer_In extends Thread {
 	Socket hsoc;
 	DataInputStream din;
 	ConcurrentLinkedQueue<String> qinlocal;
-	int statusLocal;
+	AtomicInteger statusLocal;
 
-	Hotel_Buffer_In(Socket hsoc, ConcurrentLinkedQueue<String> qin, int status) {
+	Hotel_Buffer_In(Socket hsoc, ConcurrentLinkedQueue<String> qin, AtomicInteger status) {
 		try {
 			this.statusLocal = status;
 			this.hsoc = hsoc;
@@ -30,7 +31,7 @@ public class Hotel_Buffer_In extends Thread {
 			String msg;
 			System.out.println("Hotel Buffer In thread:  " + Thread.currentThread().getId());
 			while (true) {
-				if (statusLocal == 1) {
+				if (statusLocal.get() == 1) {
 					msg = din.readUTF();
 					System.out.println("while Hotel in, Normal mode : " + msg);
 					qinlocal.add(msg);
