@@ -13,47 +13,65 @@ public class Hotel_Communication_Substrate {
 	static ConcurrentLinkedQueue<String> qout;
 	static BufferedReader bufferRead;
 	static String interuptMessage;
+	
+	static Hotel_Buffer_In in;
+	static Hotel_Buffer_Out out;
+	static HotelOperation opt;
+	
 	static AtomicInteger status;
+
 
 	public static void main(String[] args) throws InterruptedException {
 		try {
+			
 			status = new AtomicInteger(1);
+			status.set(1);
+			System.out.println("status atomic :"+ status.get());
 			qin = new ConcurrentLinkedQueue<String>();
 			qout = new ConcurrentLinkedQueue<String>();
 			hotelSoc = new ServerSocket(5218);
-			System.out.println("Concert Socket on Port Number 5218");
+			System.out.println("Hotel Socket on Port Number 5218");
 			System.out.println("Waiting for Connection ...");
 			hSoc = hotelSoc.accept();
-			Hotel_Buffer_In in = new Hotel_Buffer_In(hSoc, qin, status);
-			Hotel_Buffer_Out out = new Hotel_Buffer_Out(hSoc, qout, status);
-			HotelOperation opt = new HotelOperation(qin, qout, status);
-
-			while (true) {
-				System.out.println("Write the F/R for fail or recovery ....");
-				bufferRead = new BufferedReader(new InputStreamReader(System.in));
-				interuptMessage = bufferRead.readLine();
-
-				if (interuptMessage.equalsIgnoreCase("F")) {
-
-					if (status.get() == 1) {
-						status.set(0);
-						Thread.sleep(200);
-						opt.interrupt();
-					}
-				}
-				if (interuptMessage.equalsIgnoreCase("R")) {
-					if (status.get() == 0) {
-						status.set(2);
-						Thread.sleep(200);
-						opt.interrupt();
-					}
-					Thread.sleep(200);
-				}
-			}
-
-		} catch (IOException e) {
+			in = new Hotel_Buffer_In(hSoc, qin, status);
+			out = new Hotel_Buffer_Out(hSoc, qout, status);
+			opt = new HotelOperation(qin, qout, status);
+			
+			//test 
+			status.set(0);
+			Thread.sleep(20);
+			opt.interrupt();
+			//end Test
+			
+			
+			InteruptHandeling();
+			
+			}catch (IOException e) {
 			System.out.println("exp: Hotel Communication_Substrate ");
 			e.printStackTrace();
 		}
+	}
+	
+	public static void InteruptHandeling() throws IOException, InterruptedException{
+		while (true) {
+			System.out.println("status = "+ status);
+			System.out.println("Write the F/R for fail or recovery ....");
+			bufferRead = new BufferedReader(new InputStreamReader(System.in));
+			interuptMessage = bufferRead.readLine();
+			if (interuptMessage.equalsIgnoreCase("F")) {
+				if (status.get()==1) {
+					status.set(0);
+					opt.interrupt();
+					System.out.println("status = "+ status);
+				}
+				}
+			if (interuptMessage.equalsIgnoreCase("R")) {
+				if (status.get()== 0) {
+					status.set(2);
+					opt.interrupt();						
+				}					
+			}
+		}
+		
 	}
 }
