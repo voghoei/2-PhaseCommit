@@ -37,32 +37,28 @@ public class HotelOperation extends Thread {
 						Thread.sleep(100);
 					}
 				}
+				Thread.sleep(2000);
 				if (qinlocal.size() > 0) {
-					System.out.println("Hotel Opration qin while " + qinlocal.toString());
 					String msg = qinlocal.poll();
 					switch (msg.split(":")[0]) {
 					case "VOTE-REQUEST":
 						logHandeler("VOTE-REQUEST:" + msg.split(":")[1]);
 
 						if (checkavailabality(msg.split(":")[1])) {
-							System.out.println("Commit");
 							qoutlocal.add("VOTE-COMMIT:" + msg.split(":")[1]);
 							logHandeler("VOTE-COMMIT:" + msg.split(":")[1]);
 						} else {
-							System.out.println("Abort");
 							qoutlocal.add("VOTE-ABORT:" + msg.split(":")[1]);
 							logHandeler("VOTE-ABORT:" + msg.split(":")[1]);
 						}
 						break;
 					case "GLOBAL-COMMIT":
-						System.out.println("GLOBAL-COMMIT");
 						logHandeler("GLOBAL-COMMI:" + msg.split(":")[1]);
 						deductRoom(msg);
 						LastLog = toString(roomAvailable);
 						break;
 
 					case "GLOBAL-ABORT":
-						System.out.println("GLOBAL-ABORT");
 						logHandeler("GLOBAL-ABORT:" + msg.split(":")[1]);
 						break;
 
@@ -168,7 +164,7 @@ public class HotelOperation extends Thread {
 			roomAvailable = new int[10];
 			brHotel.readLine();
 			for (int i = 0; i < 10; i++) {
-				roomAvailable[i] = Integer.parseInt(brHotel.readLine().split(" ")[1]);				
+				roomAvailable[i] = Integer.parseInt(brHotel.readLine().split(" ")[1]);
 			}
 
 		} catch (IOException e) {
@@ -181,8 +177,8 @@ public class HotelOperation extends Thread {
 	public static String toString(int[] a) {
 		String stringArray = "";
 		for (int i = 0; i < 10; i++) {
-			stringArray += a[i] + ",";			
+			stringArray += a[i] + ",";
 		}
-		return stringArray.substring(0,stringArray.length()-1);
+		return stringArray.substring(0, stringArray.length() - 1);
 	}
 }

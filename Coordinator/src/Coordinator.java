@@ -52,7 +52,6 @@ public class Coordinator {
 		operation = new CoordinatorOperation(cqin, hqin, qout, brCoordinatorConfig, status);
 
 		while (true) {
-			System.out.println("Write the F/R for fail or recovery ....");
 			bufferRead = new BufferedReader(new InputStreamReader(System.in));
 			interuptMessage = bufferRead.readLine();
 

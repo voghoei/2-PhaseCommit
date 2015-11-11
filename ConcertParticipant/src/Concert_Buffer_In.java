@@ -13,8 +13,8 @@ public class Concert_Buffer_In extends Thread {
 
 	Concert_Buffer_In(Socket csoc, ConcurrentLinkedQueue<String> qin, AtomicInteger status) {
 		try {
-			
-			this.statusLocal=status;
+
+			this.statusLocal = status;
 			this.csoc = csoc;
 			this.qinlocal = qin;
 			din = new DataInputStream(csoc.getInputStream());
@@ -33,13 +33,13 @@ public class Concert_Buffer_In extends Thread {
 			String msg;
 			System.out.println("Concert Buffer In thread:  " + Thread.currentThread().getId());
 			while (true) {
-				if (statusLocal.get()==1) {
-					msg = din.readUTF();
-					System.out.println("while concert in, Normal mode : " + msg);
+				sleep(1000);
+				msg = din.readUTF();
+				if (statusLocal.get() == 1) {
+					System.out.println("Buffer in, Normal mode : " + msg);
 					qinlocal.add(msg);
 				} else {
-					msg = din.readUTF();
-					System.out.println("while concert in, Discarde Message " + msg);
+					System.out.println("Buffer in, Discarde Message: " + msg);
 				}
 
 			}

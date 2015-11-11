@@ -32,17 +32,18 @@ public class Coordinator_Buffer_Out extends Thread {
 			String msg;
 			System.out.println("Coordinator Buffer Out thread:  " + Thread.currentThread().getId());
 			while (true) {
-				if (qoutlocal.size() > 0) {
+				if (qoutlocal.size() > 0) {					
 					if (statusLocal.get() == 1) {
 						msg = qoutlocal.poll();
 						cdout.writeUTF(msg);
 						hdout.writeUTF(msg);
-						System.out.println("Coordinator Buffer Out, message: " + msg);
+						System.out.println("Buffer Out, message: " + msg);
 					} else {
 						qoutlocal.clear();
-						System.out.println("Coordinator Buffer Out, qout clean ");
+						System.out.println("Buffer Out, qout clean ");
 					}
 				}
+				sleep(1000);
 			}
 		} catch (Exception ex) {
 			System.out.println("exp: Coordinator Buffer out run  ...");

@@ -13,7 +13,7 @@ public class Concert_Buffer_Out extends Thread {
 
 	Concert_Buffer_Out(Socket csoc, ConcurrentLinkedQueue<String> qout, AtomicInteger status) {
 		try {
-			this.statusLocal=status;
+			this.statusLocal = status;
 			this.csoc = csoc;
 			this.qoutlocal = qout;
 			dout = new DataOutputStream(csoc.getOutputStream());
@@ -36,17 +36,18 @@ public class Concert_Buffer_Out extends Thread {
 		try {
 			String msg;
 			System.out.println("Concert Buffer Out thread :  " + Thread.currentThread().getId());
-			while (true) {
-				if (qoutlocal.size() > 0) {
-					if (statusLocal.get()==1) {
+			while (true) {				
+				if (qoutlocal.size() > 0) {					
+					if (statusLocal.get() == 1) {
 						msg = qoutlocal.poll();
 						dout.writeUTF(msg);
-						System.out.println("Concert Buffer Out, message" + msg);
+						System.out.println("Buffer Out, message: " + msg);
 					} else {
 						qoutlocal.clear();
-						System.out.println("Concert Buffer Out, qout clean ");
+						System.out.println("Buffer Out, qout clean. ");
 					}
 				}
+				sleep(1000);
 			}
 		} catch (Exception ex) {
 			System.out.println("exp: Concert Buffer Out thread ");

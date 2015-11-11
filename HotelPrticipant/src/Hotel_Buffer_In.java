@@ -31,13 +31,13 @@ public class Hotel_Buffer_In extends Thread {
 			String msg;
 			System.out.println("Hotel Buffer In thread:  " + Thread.currentThread().getId());
 			while (true) {
+				sleep(1000);
+				msg = din.readUTF();
 				if (statusLocal.get() == 1) {
-					msg = din.readUTF();
-					System.out.println("while Hotel in, Normal mode : " + msg);
+					System.out.println("Buffer in, Normal mode: " + msg);
 					qinlocal.add(msg);
 				} else {
-					msg = din.readUTF();
-					System.out.println("while Hotel in, Discarde Message " + msg);
+					System.out.println("Buffer in, Discarde Message: " + msg);
 				}
 
 			}

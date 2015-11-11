@@ -26,26 +26,22 @@ public class Coordinator_Buffer_In_Concert extends Thread {
 	public void run() {
 		String msg;
 		try {
-			// table.put(Thread.currentThread().getId(), false);
 			System.out.println("Coordinator Concert Buffer In thread:  " + Thread.currentThread().getId());
 
 			while (true) {
+				sleep(1000);
+				msg = cdin.readUTF();
 				if (statusLocal.get() == 1) {
-					msg = cdin.readUTF();
-					System.out.println("while coordinator concert in, Normal mode" + msg);
+					System.out.println("Buffer Out, Normal mode: " + msg);
 					cqinlocal.add(msg);
 				} else {
-					msg = cdin.readUTF();
-					System.out.println("while coordinator concert in, Discarde Message " + msg);
-				}
-				sleep(1);
+					System.out.println("Buffer Out, Discarde Message: " + msg);
+				}	
 			}
-			
-		} 
-		catch (InterruptedException ex) {
+
+		} catch (InterruptedException ex) {
 			System.out.println("\t exp:  Coordinator Concert Read  ");
-		} 
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			System.out.println("\t exp:  Coordinator Concert Read  ");
 		}
 	}

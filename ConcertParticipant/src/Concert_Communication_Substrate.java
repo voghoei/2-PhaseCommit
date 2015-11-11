@@ -15,20 +15,18 @@ public class Concert_Communication_Substrate {
 	static ConcurrentLinkedQueue<String> qout;
 	static BufferedReader bufferRead;
 	static String interuptMessage;
-	
+
 	static Concert_Buffer_In in;
 	static Concert_Buffer_Out out;
 	static ConcertOperation opt;
-	
-	static AtomicInteger status;
 
+	static AtomicInteger status;
 
 	public static void main(String[] args) throws InterruptedException {
 		try {
-			
+
 			status = new AtomicInteger(1);
 			status.set(1);
-			System.out.println("status atomic :"+ status.get());
 			qin = new ConcurrentLinkedQueue<String>();
 			qout = new ConcurrentLinkedQueue<String>();
 			concertSoc = new ServerSocket(5217);
@@ -38,42 +36,32 @@ public class Concert_Communication_Substrate {
 			in = new Concert_Buffer_In(cSoc, qin, status);
 			out = new Concert_Buffer_Out(cSoc, qout, status);
 			opt = new ConcertOperation(qin, qout, status);
-			
-//			//test 
-//			status.set(0);
-//			Thread.sleep(20);
-//			opt.interrupt();
-//			//end Test
-//			
-			
+
 			InteruptHandeling();
-			
-			}catch (IOException e) {
+
+		} catch (IOException e) {
 			System.out.println("exp: Concert Communication_Substrate ");
 			e.printStackTrace();
 		}
 	}
-	
-	public static void InteruptHandeling() throws IOException, InterruptedException{
+
+	public static void InteruptHandeling() throws IOException, InterruptedException {
 		while (true) {
-			System.out.println("status = "+ status);
-			System.out.println("Write the F/R for fail or recovery ....");
 			bufferRead = new BufferedReader(new InputStreamReader(System.in));
 			interuptMessage = bufferRead.readLine();
 			if (interuptMessage.equalsIgnoreCase("F")) {
-				if (status.get()==1) {
+				if (status.get() == 1) {
 					status.set(0);
-					opt.interrupt();
-					System.out.println("status = "+ status);
+					opt.interrupt();					
 				}
-				}
+			}
 			if (interuptMessage.equalsIgnoreCase("R")) {
-				if (status.get()== 0) {
+				if (status.get() == 0) {
 					status.set(2);
-					opt.interrupt();						
-				}					
+					opt.interrupt();
+				}
 			}
 		}
-		
+
 	}
 }

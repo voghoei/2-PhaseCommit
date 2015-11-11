@@ -36,16 +36,17 @@ public class Hotel_Buffer_Out extends Thread {
 			String msg;
 			System.out.println("Hotel Buffer Out thread :  " + Thread.currentThread().getId());
 			while (true) {
-				if (qoutlocal.size() > 0) {
+				if (qoutlocal.size() > 0) {					
 					if (statusLocal.get() == 1) {
 						msg = qoutlocal.poll();
 						dout.writeUTF(msg);
-						System.out.println("Hotel Buffer Out, message" + msg);
+						System.out.println("Buffer Out, message: " + msg);
 					} else {
 						qoutlocal.clear();
-						System.out.println("Hotel Buffer Out, qout clean ");
+						System.out.println("Buffer Out, qout clean ");
 					}
 				}
+				sleep(1000);
 			}
 		} catch (Exception ex) {
 			System.out.println("exp: Hotel Buffer Out thread ");

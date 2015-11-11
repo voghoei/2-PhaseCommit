@@ -66,10 +66,10 @@ public class CoordinatorOperation extends Thread {
 						Thread.sleep(100);
 					}
 				}
+				Thread.sleep(1000);
 				qoutlocal.add("VOTE-REQUEST:" + reservation);
 				logHandeler("VOTE-REQUEST:" + reservation);
-				System.out.println("VOTE-REQUEST added to local cout");
-
+				
 				transactionFlag = true;
 				startTime = System.currentTimeMillis();
 
@@ -80,10 +80,10 @@ public class CoordinatorOperation extends Thread {
 							Thread.sleep(100);
 						}
 					}
+					Thread.sleep(1000);
 					if (cqinlocal.size() > 0) {
 						String msg = cqinlocal.poll();
 						transactionId = msg.split(":")[1].split(" ")[0];
-						System.out.println("Message " + msg);
 						logHandeler("Concert:" + msg);
 						switch (msg.split(":")[0]) {
 						case "VOTE-COMMIT":
@@ -96,7 +96,6 @@ public class CoordinatorOperation extends Thread {
 						}
 					}
 					if (hqinlocal.size() > 0) {
-						System.out.println("Coordinator Opration hqin commit " + hqinlocal.toString());
 						String msg = hqinlocal.poll();
 						transactionId = msg.split(":")[1].split(" ")[0];
 						logHandeler("Hotel:" + msg);
