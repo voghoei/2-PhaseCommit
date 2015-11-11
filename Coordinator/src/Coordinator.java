@@ -32,6 +32,7 @@ public class Coordinator {
 	static BufferedReader brCoordinatorConfig = null;
 	static BufferedReader bufferRead;
 	static String interuptMessage;
+	static String bookingFileName;
 
 	// Buffers
 	static ConcurrentLinkedQueue<String> hqin;
@@ -49,7 +50,7 @@ public class Coordinator {
 		hotelIn = new Coordinator_Buffer_In_Hotel(hsoc, hqin, status);
 		concertIn = new Coordinator_Buffer_In_Concert(csoc, cqin, status);
 		outs = new Coordinator_Buffer_Out(hsoc, csoc, qout, status);
-		operation = new CoordinatorOperation(cqin, hqin, qout, brCoordinatorConfig, status);
+		operation = new CoordinatorOperation(cqin, hqin, qout, bookingFileName, status);
 
 		while (true) {
 			bufferRead = new BufferedReader(new InputStreamReader(System.in));
@@ -93,6 +94,8 @@ public class Coordinator {
 
 			hsoc = new Socket(hAddress, Integer.parseInt(hPort));
 			System.out.println("Hotel Socket on Port Number " + hPort);
+			
+			bookingFileName = brCoordinatorConfig.readLine();
 
 		} catch (IOException e) {
 			System.out.println("exp: Coordinator Communication_Substrate ");

@@ -36,15 +36,15 @@ public class CoordinatorOperation extends Thread {
 	// Input coordinate file
 	static FileInputStream fstreamCoordinateFile = null;
 	static BufferedReader brCoordinator = null;
-	static BufferedReader brCoordinatorConfigLocal;
+	static String bookingFileNameLocal;
 	Hashtable<String, Boolean> commitHashtableConcert;
 	Hashtable<String, Boolean> commitHashtableHotel;
 
 	CoordinatorOperation(ConcurrentLinkedQueue<String> cqin, ConcurrentLinkedQueue<String> hqin, ConcurrentLinkedQueue<String> qout,
-			BufferedReader brCoordinatorConfig, AtomicInteger status) throws IOException {
+			String bookingFileName, AtomicInteger status) throws IOException {
 		this.statusLocal = status;
 		reservations = new ArrayList<String>();
-		this.brCoordinatorConfigLocal = brCoordinatorConfig;
+		this.bookingFileNameLocal = bookingFileName;
 		loadRequest();
 		commitHashtableConcert = new Hashtable<String, Boolean>();
 		commitHashtableHotel = new Hashtable<String, Boolean>();
@@ -146,15 +146,16 @@ public class CoordinatorOperation extends Thread {
 					Thread.sleep(100);
 				}
 			} catch (InterruptedException ex1) {
-				System.out.println("awaik ");
-				statusLocal.set(1);
+				System.out.println("awaik ");				
 				Recovery(lastTransaction);
+				statusLocal.set(1);
+				System.out.println(reservations.toString());
 			}
 		}
 	}
 
 	public static void loadRequest() throws FileNotFoundException, IOException {
-		fstreamCoordinateFile = new FileInputStream(brCoordinatorConfigLocal.readLine());
+		fstreamCoordinateFile = new FileInputStream(bookingFileNameLocal);
 		brCoordinator = new BufferedReader(new InputStreamReader(fstreamCoordinateFile));
 		String request;
 
@@ -166,7 +167,7 @@ public class CoordinatorOperation extends Thread {
 
 	public static void Recovery(String currentTransaction) {
 		try {
-			fstreamCoordinateFile = new FileInputStream(brCoordinatorConfigLocal.readLine());
+			fstreamCoordinateFile = new FileInputStream(bookingFileNameLocal);
 
 			brCoordinator = new BufferedReader(new InputStreamReader(fstreamCoordinateFile));
 			String request;

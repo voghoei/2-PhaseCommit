@@ -105,6 +105,8 @@ public class HotelOperation extends Thread {
 		for (int i = 0; i < 10; i++) {
 			roomAvailable[i] = Integer.parseInt(days[i]);
 		}
+		System.out.println("Recovery, ticketAvailable=  "+toString(roomAvailable));
+		
 	}
 
 	public static void logHandeler(String msg) throws IOException {
@@ -156,6 +158,8 @@ public class HotelOperation extends Thread {
 				roomAvailable[Integer.parseInt(days.split(" ")[i])] -= numRoom;
 			}
 		}
+		System.out.println("ticketAvailable=  "+toString(roomAvailable));
+		
 	}
 
 	public static void hotelConfig() {

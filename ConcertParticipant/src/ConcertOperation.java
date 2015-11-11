@@ -107,6 +107,7 @@ public class ConcertOperation extends Thread {
 		for (int i = 0; i < 10; i++) {
 			ticketAvailable[i] = Integer.parseInt(days[i]);
 		}
+		System.out.println("Recovery, ticketAvailable=  "+toString(ticketAvailable));
 	}
 
 	public static void logHandeler(String msg) throws IOException {
@@ -157,6 +158,7 @@ public class ConcertOperation extends Thread {
 			for (int i = 0; i < days.split(" ").length; i++) {
 				ticketAvailable[Integer.parseInt(days.split(" ")[i])] -= numTicket;
 			}
+			System.out.println("ticketAvailable=  "+toString(ticketAvailable));
 		}
 	}
 
@@ -183,4 +185,4 @@ public class ConcertOperation extends Thread {
 		}
 		return stringArray.substring(0, stringArray.length() - 1);
 	}
-}
+	}
