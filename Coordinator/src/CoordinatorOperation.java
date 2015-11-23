@@ -16,7 +16,7 @@ public class CoordinatorOperation extends Thread {
 	// timeout
 	static long startTime;
 
-	static // last Taransaction
+	static// last Taransaction
 	String lastTransaction;
 
 	// status
@@ -58,9 +58,13 @@ public class CoordinatorOperation extends Thread {
 	public void run() {
 
 		boolean transactionFlag;
-		try {
+		int reserveIndex = 0;
+		String reservation = "";
 
-			for (String reservation : reservations) {
+		for (reserveIndex = 0; reserveIndex < reservations.size(); reserveIndex++) {
+			try {
+				reservation = reservations.get(reserveIndex);
+				
 				if (!(statusLocal.get() == 1)) {
 					while (true) {
 						Thread.sleep(100);
@@ -69,7 +73,7 @@ public class CoordinatorOperation extends Thread {
 				Thread.sleep(1000);
 				qoutlocal.add("VOTE-REQUEST:" + reservation);
 				logHandeler("VOTE-REQUEST:" + reservation);
-				
+
 				transactionFlag = true;
 				startTime = System.currentTimeMillis();
 
@@ -84,28 +88,32 @@ public class CoordinatorOperation extends Thread {
 					if (cqinlocal.size() > 0) {
 						String msg = cqinlocal.poll();
 						transactionId = msg.split(":")[1].split(" ")[0];
-						logHandeler("Concert:" + msg);
-						switch (msg.split(":")[0]) {
-						case "VOTE-COMMIT":
-							commitHashtableConcert.put(transactionId, true);
-							break;
+						if (reservation.split(" ")[0].equals(transactionId)) {
+							logHandeler("Concert:" + msg);
+							switch (msg.split(":")[0]) {
+							case "VOTE-COMMIT":
+								commitHashtableConcert.put(transactionId, true);
+								break;
 
-						case "VOTE-ABORT":
-							commitHashtableConcert.put(transactionId, false);
-							break;
+							case "VOTE-ABORT":
+								commitHashtableConcert.put(transactionId, false);
+								break;
+							}
 						}
 					}
 					if (hqinlocal.size() > 0) {
 						String msg = hqinlocal.poll();
 						transactionId = msg.split(":")[1].split(" ")[0];
-						logHandeler("Hotel:" + msg);
-						switch (msg.split(":")[0]) {
-						case "VOTE-COMMIT":
-							commitHashtableHotel.put(transactionId, true);
-							break;
-						case "VOTE-ABORT":
-							commitHashtableHotel.put(transactionId, false);
-							break;
+						if (reservation.split(" ")[0].equals(transactionId)) {
+							logHandeler("Hotel:" + msg);
+							switch (msg.split(":")[0]) {
+							case "VOTE-COMMIT":
+								commitHashtableHotel.put(transactionId, true);
+								break;
+							case "VOTE-ABORT":
+								commitHashtableHotel.put(transactionId, false);
+								break;
+							}
 						}
 					}
 
@@ -114,8 +122,7 @@ public class CoordinatorOperation extends Thread {
 						if (commitHashtableConcert.get(reservation.split(" ")[0]) && commitHashtableHotel.get(reservation.split(" ")[0])) {
 							qoutlocal.add("GLOBAL-COMMIT:" + reservation);
 							logHandeler("GLOBAL-COMMIT:" + reservation);
-							lastTransaction = reservation.split(" ")[0];
-							System.out.println("lastTransaction =" + lastTransaction);
+							lastTransaction = reservation.split(" ")[0];						
 
 						} else {
 							qoutlocal.add("GLOBAL-ABORT:" + reservation);
@@ -126,7 +133,9 @@ public class CoordinatorOperation extends Thread {
 						commitHashtableHotel.remove(reservation.split(" ")[0]);
 						transactionFlag = false;
 					}
-					if (System.currentTimeMillis() - startTime > 5000) {
+					if (System.currentTimeMillis() - startTime > 10000) {
+						System.out.println("Time Out for request : " + reservation);
+						logHandeler("Time Out for request : " + reservation);
 						qoutlocal.add("GLOBAL-ABORT:" + reservation);
 						logHandeler("GLOBAL-ABORT:" + reservation);
 						lastTransaction = reservation.split(" ")[0];
@@ -135,21 +144,23 @@ public class CoordinatorOperation extends Thread {
 				}
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException ex) {
-			System.out.println("exp : Callee  ");
-			reservations.clear();
-			try {
-				while (true) {
-					System.out.println("sleep ");
-					Thread.sleep(100);
+			catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException ex) {
+				System.out.println("exp : Coordinator filed  ");
+				reservations.clear();
+				try {
+					while (true) {
+						System.out.println("sleep ");
+						Thread.sleep(100);
+					}
+				} catch (InterruptedException ex1) {
+					System.out.println("awaik ");
+					Recovery(lastTransaction);
+					reserveIndex = -1;
+					statusLocal.set(1);
+					
 				}
-			} catch (InterruptedException ex1) {
-				System.out.println("awaik ");				
-				Recovery(lastTransaction);
-				statusLocal.set(1);
-				System.out.println(reservations.toString());
 			}
 		}
 	}
@@ -171,11 +182,11 @@ public class CoordinatorOperation extends Thread {
 
 			brCoordinator = new BufferedReader(new InputStreamReader(fstreamCoordinateFile));
 			String request;
-			
-			while ((request = brCoordinator.readLine()) != null && !request.split(" ")[0].equals(lastTransaction ) ) {
+
+			while ((request = brCoordinator.readLine()) != null && !request.split(" ")[0].equals(lastTransaction)) {
 				break;
 			}
-			while ((request = brCoordinator.readLine()) != null){
+			while ((request = brCoordinator.readLine()) != null) {
 				reservations.add(request);
 			}
 		} catch (IOException e) {

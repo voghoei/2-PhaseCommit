@@ -18,6 +18,7 @@ public class ConcertOperation extends Thread {
 
 	AtomicInteger statusLocal;
 	static String LastLog;
+	static String lastRequest;
 
 	ConcertOperation(ConcurrentLinkedQueue<String> qin, ConcurrentLinkedQueue<String> qout, AtomicInteger status) throws IOException {
 
@@ -44,8 +45,13 @@ public class ConcertOperation extends Thread {
 					String msg = qinlocal.poll();
 					switch (msg.split(":")[0]) {
 					case "VOTE-REQUEST":
+						lastRequest = msg;
 						logHandeler("VOTE-REQUEST:" + msg.split(":")[1]);
-
+						if (!(statusLocal.get() == 1)) {
+							while (true) {
+								Thread.sleep(100);
+							}
+						}
 						if (checkavailabality(msg.split(":")[1])) {
 							qoutlocal.add("VOTE-COMMIT:" + msg.split(":")[1]);
 							logHandeler("VOTE-COMMIT:" + msg.split(":")[1]);
@@ -54,6 +60,7 @@ public class ConcertOperation extends Thread {
 							qoutlocal.add("VOTE-ABORT:" + msg.split(":")[1]);
 							logHandeler("VOTE-ABORT:" + msg.split(":")[1]);
 						}
+						lastRequest="";
 						break;
 					case "GLOBAL-COMMIT":
 						logHandeler("GLOBAL-COMMI:" + msg.split(":")[1]);
@@ -107,9 +114,16 @@ public class ConcertOperation extends Thread {
 		for (int i = 0; i < 10; i++) {
 			ticketAvailable[i] = Integer.parseInt(days[i]);
 		}
+		if (lastRequest.length()>1){
+			if (lastRequest.split(":")[0].endsWith("VOTE-REQUEST")){
+				qinlocal.add(lastRequest);
+			}
+		}
+		
 		System.out.println("Recovery, ticketAvailable=  "+toString(ticketAvailable));
 	}
-
+	
+	
 	public static void logHandeler(String msg) throws IOException {
 
 		File file = new File("concertLog.txt");

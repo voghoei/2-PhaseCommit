@@ -16,6 +16,7 @@ public class HotelOperation extends Thread {
 
 	AtomicInteger statusLocal;
 	static String LastLog;
+	static String lastRequest;
 
 	HotelOperation(ConcurrentLinkedQueue<String> qin, ConcurrentLinkedQueue<String> qout, AtomicInteger status) throws IOException {
 
@@ -42,6 +43,7 @@ public class HotelOperation extends Thread {
 					String msg = qinlocal.poll();
 					switch (msg.split(":")[0]) {
 					case "VOTE-REQUEST":
+						lastRequest = msg;
 						logHandeler("VOTE-REQUEST:" + msg.split(":")[1]);
 
 						if (checkavailabality(msg.split(":")[1])) {
@@ -51,6 +53,7 @@ public class HotelOperation extends Thread {
 							qoutlocal.add("VOTE-ABORT:" + msg.split(":")[1]);
 							logHandeler("VOTE-ABORT:" + msg.split(":")[1]);
 						}
+						lastRequest="";
 						break;
 					case "GLOBAL-COMMIT":
 						logHandeler("GLOBAL-COMMI:" + msg.split(":")[1]);
@@ -104,6 +107,11 @@ public class HotelOperation extends Thread {
 		String[] days = LastLog.split(",");
 		for (int i = 0; i < 10; i++) {
 			roomAvailable[i] = Integer.parseInt(days[i]);
+		}
+		if (lastRequest.length()>1){
+			if (lastRequest.split(":")[0].endsWith("VOTE-REQUEST")){
+				qinlocal.add(lastRequest);
+			}
 		}
 		System.out.println("Recovery, ticketAvailable=  "+toString(roomAvailable));
 		
