@@ -38,10 +38,10 @@ public class Coordinator_Buffer_In_Hotel extends Thread {
 				sleep(1000);
 				msg = hdin.readUTF();
 				if (statusLocal.get() == 1) {
-					System.out.println("while coordinator hotel in , Normal mode  " + msg);
+					System.out.println("Hotel in , Normal mode  " + msg);
 					hqinlocal.add(msg);
 				} else {
-					System.out.println("while coordinator Hotel in, Discarde Message " + msg);
+					System.out.println("Hotel in, Discarde Message " + msg);
 				}
 			}
 		} catch (Exception ex) {

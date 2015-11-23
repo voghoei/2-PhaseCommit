@@ -32,10 +32,10 @@ public class Coordinator_Buffer_In_Concert extends Thread {
 				sleep(1000);
 				msg = cdin.readUTF();
 				if (statusLocal.get() == 1) {
-					System.out.println("Buffer Out, Normal mode: " + msg);
+					System.out.println("Concert In, Normal mode: " + msg);
 					cqinlocal.add(msg);
 				} else {
-					System.out.println("Buffer Out, Discarde Message: " + msg);
+					System.out.println("Concert In, Discarde Message: " + msg);
 				}	
 			}
 
